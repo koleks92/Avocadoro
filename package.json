@@ -1,0 +1,19 @@
+{
+  "name": "avocadoro",
+  "version": "1.0.0",
+  "description": "**Avocadoro** is a Pomodoro-style productivity app built with **React**, **TypeScript**, **Electron**, and **Supabase**.  ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/koleks92/Avocadoro.git"
+  },
+  "author": "koleks92",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/koleks92/Avocadoro/issues"
+  },
+  "homepage": "https://github.com/koleks92/Avocadoro#readme"
+}
