@@ -1,25 +1,34 @@
 {
-  "name": "avocadoro",
-  "version": "1.0.0",
-  "description": "**Avocadoro** is a Pomodoro-style productivity app built with **React**, **TypeScript**, **Electron**, and **Supabase**.  ",
-  "main": "main.js",
-  "scripts": {
-    "start": "electron .",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/koleks92/Avocadoro.git"
-  },
-  "author": "koleks92",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/koleks92/Avocadoro/issues"
-  },
-  "homepage": "https://github.com/koleks92/Avocadoro#readme",
-  "devDependencies": {
-    "electron": "^38.4.0",
-    "electron-builder": "^26.0.12",
-    "electron-is-dev": "^3.0.1"
-  }
+    "name": "avocadoro",
+    "version": "1.0.0",
+    "description": "**Avocadoro** is a Pomodoro-style productivity app built with **React**, **TypeScript**, **Electron**, and **Supabase**.  ",
+    "main": "main.js",
+    "scripts": {
+        "start": "electron .",
+        "dist": "electron-builder",
+        "main": "main.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "build": {
+        "appId": "com.koleks92.Avocadoro",
+        "productName": "Avocadoro",
+        "directories": {
+            "output": "dist"
+        }
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/koleks92/Avocadoro.git"
+    },
+    "author": "koleks92",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/koleks92/Avocadoro/issues"
+    },
+    "homepage": "https://github.com/koleks92/Avocadoro#readme",
+    "devDependencies": {
+        "electron": "^38.4.0",
+        "electron-builder": "^26.0.12",
+        "electron-is-dev": "^3.0.1"
+    }
 }

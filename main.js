@@ -12,10 +12,11 @@ const createWindow = () => {
     });
 
     const startURL = isDev
-        ? "http://localhost:3000"
+        ? "http://localhost:5173"
         : `file://${path.join(__dirname, "../build/index.html")}`;
 
-    win.loadFile(startURL);
+    console.log(startURL);
+    win.loadURL(startURL);
 };
 
 app.whenReady().then(() => {
