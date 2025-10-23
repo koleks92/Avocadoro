@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/koleks92/Avocadoro/issues"
   },
-  "homepage": "https://github.com/koleks92/Avocadoro#readme"
+  "homepage": "https://github.com/koleks92/Avocadoro#readme",
+  "devDependencies": {
+    "electron": "^38.4.0"
+  }
 }
