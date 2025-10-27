@@ -1,15 +1,18 @@
-import { BrowserRouter, Routes, Route} from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { createRoot } from "react-dom/client";
 import Login from "./login";
 import Dashboard from "./dashboard";
+import { AvocadoroProvider } from "./store/AvocadoroContext";
 
 export default function App() {
     return (
         <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<Login />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-            </Routes>
+            <AvocadoroProvider>
+                <Routes>
+                    <Route path="/" element={<Login />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                </Routes>
+            </AvocadoroProvider>
         </BrowserRouter>
     );
 }

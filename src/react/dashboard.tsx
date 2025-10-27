@@ -1,15 +1,10 @@
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { createClient } from "@supabase/supabase-js";
-
-// Get .env and create supabase clinet
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+import { AvocadoroContext } from "./store/AvocadoroContext";
 
 export default function Dashboard() {
+    const { session, supabase } = useContext(AvocadoroContext);
     const navigate = useNavigate();
-
-    console.log("Here")
 
     async function signOut() {
         const { error } = await supabase.auth.signOut();
