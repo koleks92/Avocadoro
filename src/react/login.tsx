@@ -23,6 +23,12 @@ export default function Login() {
     const navigate = useNavigate();
 
     useEffect(() => {
+        (window as any).handleSignInWithGoogle = (response: any) => {
+            console.log("Google credential:", response.credential);
+        };
+    }, []);
+
+    useEffect(() => {
         if (session) {
             navigate("/dashboard");
         }
@@ -88,13 +94,28 @@ export default function Login() {
         }
     }
 
+    async function handleSignInWithGoogle() {
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: "google",
+        });
+
+        if (error) {
+        }
+    }
+
     if (!session) {
         return (
             <div className="test">
                 {signUpView ? (
                     <div>
                         <div>
-                            <Button label="Go back" type="button" onClick={() => {setSignUpView(false)}}/>
+                            <Button
+                                label="Go back"
+                                type="button"
+                                onClick={() => {
+                                    setSignUpView(false);
+                                }}
+                            />
                         </div>
 
                         <form onSubmit={signUpHandler}>
@@ -198,6 +219,12 @@ export default function Login() {
                                 <br />
                             )}
                         </div>
+                        <Button
+                            type="button"
+                            label="Google"
+                            onClick={() => handleSignInWithGoogle()}
+                        />
+
                         <div>
                             <Button label="Log in" type="submit" />
                             <Button
