@@ -5,11 +5,13 @@ import { useNavigate } from "react-router-dom";
 import { AvocadoroContext } from "./store/AvocadoroContext";
 import Input from "./components/input";
 import Button from "./components/button";
+import { ThreeDot } from "react-loading-indicators";
 
 export default function Login() {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [confirmPassword, setConfirmPassword] = useState<string>("");
+    const [loading, setLoading] = useState(true);
 
     const [signUpView, setSignUpView] = useState<boolean>(false);
     const [signUpMessage, setSignUpMessage] = useState<string>();
@@ -19,12 +21,26 @@ export default function Login() {
         useState<boolean>(false);
     const [emailInvalid, setEmailInvalid] = useState<boolean>(false);
 
-    const { session, supabase } = useContext(AvocadoroContext);
+    const { session, supabase, setSession } = useContext(AvocadoroContext);
     const navigate = useNavigate();
 
     useEffect(() => {
-        (window as any).handleSignInWithGoogle = (response: any) => {
-            console.log("Google credential:", response.credential);
+        const timer = setTimeout(() => setLoading(false), 1000); // minimum 1s loader
+
+        supabase.auth.getSession().then(({ data }) => {
+            setSession(data.session);
+            setLoading(false); // stops as soon as session known (after min delay)
+        });
+
+        const { data: listener } = supabase.auth.onAuthStateChange(
+            (_event, session) => {
+                setSession(session);
+            }
+        );
+
+        return () => {
+            clearTimeout(timer);
+            listener.subscription.unsubscribe();
         };
     }, []);
 
@@ -47,10 +63,23 @@ export default function Login() {
         setPasswordInvalid(passwordIsInvalid);
 
         if (!emailIsInvalid && !passwordIsInvalid) {
+            setLoading(true);
             const { data, error } = await supabase.auth.signInWithPassword({
                 email: email,
                 password: password,
             });
+
+            if (error) {
+                console.error("Signin error:", error);
+                setLoading(false);
+
+                return;
+            }
+
+            if (data) {
+                console.log("Signin success:", data);
+                setLoading(false);
+            }
         }
     }
 
@@ -76,6 +105,7 @@ export default function Login() {
             !passwordIsInvalid &&
             !confirmPasswordIsInvalid
         ) {
+            setLoading(true);
             const { data, error } = await supabase.auth.signUp({
                 email: email.trim(),
                 password: password.trim(),
@@ -84,23 +114,65 @@ export default function Login() {
             if (error) {
                 console.error("Signup error:", error);
                 setSignUpMessage(error.message);
+                setLoading(false);
+
                 return;
             }
 
             if (data) {
                 console.log("Signup success:", data);
                 setSignUpView(false);
+                setLoading(false);
             }
         }
     }
 
     async function handleSignInWithGoogle() {
+        setLoading(true);
+
         const { error } = await supabase.auth.signInWithOAuth({
             provider: "google",
         });
 
         if (error) {
+            console.error("Signup error:", error);
+            setSignUpMessage(error.message);
+            setLoading(false);
+
+            return;
         }
+    }
+
+    async function handleSignInWithApple() {
+        setLoading(true);
+
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: "apple",
+            options: {
+                redirectTo:
+                    "https://waahmuiugnnswpswwrah.supabase.co/auth/v1/callback",
+            },
+        });
+
+        if (error) {
+            console.error("Signup error:", error);
+            setSignUpMessage(error.message);
+            setLoading(false);
+            return;
+        }
+    }
+
+    if (loading) {
+        return (
+            <div className="test">
+                <ThreeDot
+                    color="#32cd32"
+                    size="medium"
+                    text=""
+                    textColor=""
+                />{" "}
+            </div>
+        );
     }
 
     if (!session) {
@@ -219,11 +291,6 @@ export default function Login() {
                                 <br />
                             )}
                         </div>
-                        <Button
-                            type="button"
-                            label="Google"
-                            onClick={() => handleSignInWithGoogle()}
-                        />
 
                         <div>
                             <Button label="Log in" type="submit" />
@@ -232,15 +299,20 @@ export default function Login() {
                                 type="button"
                                 onClick={() => setSignUpView(true)}
                             />
+                            <Button
+                                type="button"
+                                label="Google"
+                                onClick={() => handleSignInWithGoogle()}
+                            />
+                            <Button
+                                type="button"
+                                label="Apple"
+                                onClick={() => handleSignInWithApple()}
+                            />
                         </div>
                     </form>
                 )}
             </div>
         );
-    } else {
-        <div>
-            Something went wrong ! Check your internet connection and restart
-            the app
-        </div>;
     }
 }
