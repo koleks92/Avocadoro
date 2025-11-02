@@ -5,10 +5,13 @@ import { createClient, SupabaseClient, Session } from "@supabase/supabase-js";
 type AvocadoroContextType = {
     supabase: SupabaseClient;
     session: Session | null;
+    setSession: React.Dispatch<React.SetStateAction<Session | null>>;
 };
 
 // Create the context (default: null so we can handle initialization)
-export const AvocadoroContext = createContext<AvocadoroContextType | null>(null);
+export const AvocadoroContext = createContext<AvocadoroContextType | null>(
+    null
+);
 
 // Define props type for the Provider
 type AvocadoroProviderProps = {
@@ -38,7 +41,7 @@ export function AvocadoroProvider({ children }: AvocadoroProviderProps) {
     }, []);
 
     return (
-        <AvocadoroContext.Provider value={{ supabase, session }}>
+        <AvocadoroContext.Provider value={{ supabase, session, setSession }}>
             {children}
         </AvocadoroContext.Provider>
     );
