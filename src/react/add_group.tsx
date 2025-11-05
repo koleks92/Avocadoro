@@ -6,6 +6,8 @@ import Button from "./components/button";
 
 export default function AddGroup() {
     const [name, setName] = useState<string>("");
+    const [focusTimer, setFocusTimer] = useState<number>(25);
+    const [breakTimer, setBreakTimer] = useState<number>(5);
     const [message, setMessage] = useState<string>("");
 
     const { session, supabase } = useContext(AvocadoroContext);
@@ -53,11 +55,13 @@ export default function AddGroup() {
             .insert({
                 user_id: session.user.id,
                 name: name.trim(),
+                focus_timer: focusTimer,
+                break_timer: breakTimer,
             })
             .select();
 
         if (data) {
-            navigate("/dashboard")
+            navigate("/dashboard");
         }
 
         if (error) {
@@ -82,6 +86,24 @@ export default function AddGroup() {
                     placeholder="Avocadoro name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
+                />
+                <label>Enter focus time in minutes</label>
+                <Input
+                    type="number"
+                    min={1}
+                    max={60}
+                    placeholder="Focus time"
+                    value={focusTimer}
+                    onChange={(e) => setFocusTimer(Number(e.target.value))}
+                />
+                <label>Enter break time in minutes</label>
+                <Input
+                    type="number"
+                    min={1}
+                    max={60}
+                    placeholder="Break time"
+                    value={breakTimer}
+                    onChange={(e) => setBreakTimer(Number(e.target.value))}
                 />
                 <Button label="Add" type="submit" />
             </form>
