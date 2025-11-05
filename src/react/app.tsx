@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { createRoot } from "react-dom/client";
 import Login from "./login";
 import Dashboard from "./dashboard";
+import AddGroup from "./add_group";
 import { AvocadoroProvider } from "./store/AvocadoroContext";
 
 export default function App() {
@@ -11,12 +12,12 @@ export default function App() {
                 <Routes>
                     <Route path="/" element={<Login />} />
                     <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/add_group" element={<AddGroup />} />
                 </Routes>
             </AvocadoroProvider>
         </BrowserRouter>
     );
 }
-
 
 const container = document.getElementById("root")!;
 const root = createRoot(container);
