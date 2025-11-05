@@ -7,6 +7,8 @@ import { ThreeDot } from "react-loading-indicators";
 type SessionGroups = {
     id: string;
     name: string;
+    focus_time: number;
+    break_time: number;
 };
 
 export default function Dashboard() {
@@ -72,11 +74,15 @@ export default function Dashboard() {
                 Add new group
             </button>
             <div className="vertical_test">
-                {sessionGroups.map((group) => 
-                    <div onClick={() => navigate(`/group/${group.id}`)}>{group.name}</div>
-                    
-
-                )}
+                {sessionGroups.map((group: SessionGroups) => (
+                    <div
+                        onClick={() =>
+                            navigate(`/group/${group.id}`, { state: group })
+                        }
+                    >
+                        {group.name}
+                    </div>
+                ))}
             </div>
         </div>
     );
