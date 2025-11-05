@@ -14,7 +14,7 @@ export default function Dashboard() {
     }
 
     return (
-        <div>
+        <div className="vertical_test">
             Dashboard
             <button onClick={() => {navigate("/add_group")}}>Add new group</button>
             <button onClick={signOut}>Log out</button>

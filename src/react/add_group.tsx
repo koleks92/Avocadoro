@@ -7,13 +7,11 @@ export default function AddGroup() {
     const navigate = useNavigate();
 
     async function goBack() {
-
-
         navigate("/");
     }
 
     return (
-        <div>
+        <div className="vertical_test">
             Add new avocadoro group
             <button onClick={goBack}>Go Back</button>
         </div>

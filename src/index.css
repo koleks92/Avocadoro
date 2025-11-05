@@ -6,3 +6,8 @@ body {
   max-width: 38rem;
   padding: 2rem;
 }
+
+.vertical_test {
+  display: flex;
+  flex-direction: column;
+}
