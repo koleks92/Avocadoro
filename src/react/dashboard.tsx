@@ -1,3 +1,4 @@
+import "../index.css";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AvocadoroContext } from "./store/AvocadoroContext";
@@ -15,6 +16,7 @@ export default function Dashboard() {
     return (
         <div>
             Dashboard
+            <button onClick={() => {navigate("/add_group")}}>Add new group</button>
             <button onClick={signOut}>Log out</button>
         </div>
     );
