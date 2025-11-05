@@ -3,7 +3,7 @@ import { useState, ChangeEvent } from "react";
 type Props = {
   type: string;
   placeholder?: string;
-  value: string;
+  value: string | number;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 };
 
