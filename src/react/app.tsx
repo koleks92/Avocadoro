@@ -4,6 +4,7 @@ import Login from "./login";
 import Dashboard from "./dashboard";
 import AddGroup from "./add_group";
 import { AvocadoroProvider } from "./store/AvocadoroContext";
+import Group from "./group";
 
 export default function App() {
     return (
@@ -13,6 +14,7 @@ export default function App() {
                     <Route path="/" element={<Login />} />
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/add_group" element={<AddGroup />} />
+                    <Route path="/group/:id" element={<Group />} />
                 </Routes>
             </AvocadoroProvider>
         </BrowserRouter>
