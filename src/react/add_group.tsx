@@ -1,10 +1,14 @@
-import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { AvocadoroContext } from "./store/AvocadoroContext";
 import Input from "./components/input";
 import Button from "./components/button";
 
 export default function AddGroup() {
+    const { id } = useParams<{ id: string }>();
+    const { state } = useLocation();
+    const navigate = useNavigate();
+
     const [name, setName] = useState<string>("");
     const [focusTimer, setFocusTimer] = useState<number>(25);
     const [breakTimer, setBreakTimer] = useState<number>(5);
@@ -12,7 +16,13 @@ export default function AddGroup() {
 
     const { session, supabase } = useContext(AvocadoroContext);
 
-    const navigate = useNavigate();
+    useEffect(() => {
+        if (id && state && state.edit) {
+            setName(state.name);
+            setFocusTimer(state.focus_timer);
+            setBreakTimer(state.break_timer);
+        }
+    }, [id]);
 
     async function addNewGroupHandler(e: React.FormEvent): Promise<void> {
         e.preventDefault();
@@ -44,41 +54,67 @@ export default function AddGroup() {
             return;
         }
 
-        if (existingGroup) {
+        if (existingGroup && existingGroup.id != state?.id) {
+            
             setMessage("You already have a group with that name.");
             return;
         }
 
-        // Insert data
-        const { data, error } = await supabase
-            .from("session_groups")
-            .insert({
-                user_id: session.user.id,
-                name: name.trim(),
-                focus_timer: focusTimer,
-                break_timer: breakTimer,
-            })
-            .select();
+        if (state?.edit) {
+            // Edit data
+            const { data, error } = await supabase
+                .from("session_groups")
+                .update({
+                    name: name.trim(),
+                    focus_timer: focusTimer,
+                    break_timer: breakTimer,
+                })
+                .eq("id", state.id)
+                .select();
 
-        if (data) {
-            navigate("/dashboard");
-        }
+            if (data) {
+                navigate("/dashboard");
+            }
 
-        if (error) {
-            setMessage(error.message);
+            if (error) {
+                setMessage(error.message);
+            }
+        } else {
+            // Insert new data
+            const { data, error } = await supabase
+                .from("session_groups")
+                .insert({
+                    user_id: session.user.id,
+                    name: name.trim(),
+                    focus_timer: focusTimer,
+                    break_timer: breakTimer,
+                })
+                .select();
+
+            if (data) {
+                navigate("/dashboard");
+            }
+
+            if (error) {
+                setMessage(error.message);
+            }
         }
     }
 
     return (
         <div className="vertical_test">
             <Button
-            label="Go Back"
-            type="button"
+                label="Go Back"
+                type="button"
                 onClick={() => {
                     navigate("/dashboard");
                 }}
-            / >
-            Add new avocadoro group
+            />
+            {state?.edit ? (
+                <span>Edit avocadoro group</span>
+            ) : (
+                <span>Add new avocadoro group</span>
+            )}
             <form onSubmit={addNewGroupHandler}>
                 <label>Enter new avocadoro focus name</label>
                 <Input
@@ -105,7 +141,7 @@ export default function AddGroup() {
                     value={breakTimer}
                     onChange={(e) => setBreakTimer(Number(e.target.value))}
                 />
-                <Button label="Add" type="submit" />
+                <Button label={state?.edit ? "Update" : "Add"} type="submit" />
             </form>
             <span>{message}</span>
         </div>
