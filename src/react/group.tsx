@@ -1,11 +1,13 @@
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import Timer from "./components/timer";
 import { useContext, useState } from "react";
 import { AvocadoroContext } from "./store/AvocadoroContext";
+import Button from "./components/button";
 
 export default function Group() {
     const { id } = useParams<{ id: string }>();
     const { state } = useLocation();
+    const navigate = useNavigate();
 
     const [message, setMessage] = useState<string>("");
 
@@ -31,7 +33,19 @@ export default function Group() {
     return (
         <div>
             <span>Group {id}</span>
-            <Timer onComplete={onCompleteHandler} focus_timer={state.focus_timer} break_timer={state.break_timer} />
+            <Button
+                label="Go Back"
+                type="button"
+                onClick={() => {
+                    navigate("/dashboard");
+                }}
+            />
+            <Button label="Edit" type="button" onClick={() => {}} />
+            <Timer
+                onComplete={onCompleteHandler}
+                focus_timer={state.focus_timer}
+                break_timer={state.break_timer}
+            />
             {message}
         </div>
     );
