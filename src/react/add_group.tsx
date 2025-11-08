@@ -71,13 +71,13 @@ export default function AddGroup() {
 
     return (
         <div className="vertical_test">
-            <button
+            <Button
+            label="Go Back"
+            type="button"
                 onClick={() => {
                     navigate("/dashboard");
                 }}
-            >
-                Go Back
-            </button>
+            / >
             Add new avocadoro group
             <form onSubmit={addNewGroupHandler}>
                 <label>Enter new avocadoro focus name</label>
