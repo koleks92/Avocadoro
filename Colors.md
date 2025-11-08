@@ -21,6 +21,8 @@ Gray 800: #1A1A1A
 
 Gray 700: #2B2B2B
 
+White for texts: #FAFAF8;
+
 Optional warmth (the pit color)
 If you want some subtle brownish neutrals:
 
