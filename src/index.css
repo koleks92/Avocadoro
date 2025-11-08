@@ -5,6 +5,11 @@
     --background-2: #1a1a1a;
     --background-3: #2b2b2b;
     --white: #fafaf8;
+    --primary-green: #6CBF4F;
+    --primary-green-dark: #4F9A39;
+    --accent-green-light: #A7E68A;
+    --accent-green-deep: #2F7A24;
+
 }
 
 html,
@@ -32,6 +37,23 @@ body {
     margin: auto;
 }
 
+.custom_button {
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background: var(--primary-green);
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.custom_button:hover {
+  background: var(--primary-green-dark);
+}
+
+
+/* For developing, remove later */
 .vertical_test {
     display: flex;
     flex-direction: column;
