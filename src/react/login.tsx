@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { AvocadoroContext } from "./store/AvocadoroContext";
 import Input from "./components/input";
 import Button from "./components/button";
-import { ThreeDot } from "react-loading-indicators";
+import Loading from "./components/loading";
 
 export default function Login() {
     const [email, setEmail] = useState<string>("");
@@ -164,15 +164,8 @@ export default function Login() {
 
     if (loading) {
         return (
-            <div className="test">
-                <ThreeDot
-                    color="#32cd32"
-                    size="medium"
-                    text=""
-                    textColor=""
-                />{" "}
-            </div>
-        );
+        <Loading />
+        )
     }
 
     if (!session) {
