@@ -15,6 +15,7 @@ export default function App() {
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/add_group" element={<AddGroup />} />
                     <Route path="/group/:id" element={<Group />} />
+                    <Route path="/edit_group/:id" element={<AddGroup />} />
                 </Routes>
             </AvocadoroProvider>
         </BrowserRouter>
