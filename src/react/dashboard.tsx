@@ -76,6 +76,7 @@ export default function Dashboard() {
             <div className="vertical_test">
                 {sessionGroups.map((group: SessionGroups) => (
                     <div
+                        key={group.id}
                         onClick={() =>
                             navigate(`/group/${group.id}`, { state: group })
                         }
