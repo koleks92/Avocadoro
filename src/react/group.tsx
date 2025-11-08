@@ -40,7 +40,13 @@ export default function Group() {
                     navigate("/dashboard");
                 }}
             />
-            <Button label="Edit" type="button" onClick={() => {}} />
+            <Button
+                label="Edit"
+                type="button"
+                onClick={() => {
+                    navigate(`/edit_group/${state.id}`, { state: {...state, edit: true} });
+                }}
+            />
             <Timer
                 onComplete={onCompleteHandler}
                 focus_timer={state.focus_timer}
