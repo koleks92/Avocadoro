@@ -1,4 +1,4 @@
-import "../../index.css"
+import "../../index.css";
 
 type Props = {
     label: string;
@@ -7,11 +7,15 @@ type Props = {
     disabled?: boolean;
 };
 
-
 function Button({ label, onClick, type, disabled }: Props) {
     return (
         <div>
-            <button onClick={onClick} type={type} disabled={disabled} className="custom_button">
+            <button
+                onClick={onClick}
+                type={type}
+                disabled={disabled}
+                className="custom_button"
+            >
                 {label}
             </button>
         </div>

@@ -1,4 +1,6 @@
 import { useState, ChangeEvent } from "react";
+import "../../index.css"
+
 
 type Props = {
     type: string;
@@ -19,6 +21,7 @@ function Input({ type, placeholder, value, onChange, min, max }: Props) {
                 onChange={onChange}
                 min={min}
                 max={max}
+                className="custom_input"
             />
         </div>
     );
