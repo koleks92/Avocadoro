@@ -1,10 +1,11 @@
 import "../../index.css";
+import { ReactNode } from "react";
 
 type Props = {
-    label: string;
+    label: ReactNode;
     onClick?: () => void;
     type: "button" | "submit" | "reset";
-    style?: "standard" | "noBackground";
+    style?: string;
     disabled?: boolean;
 };
 
@@ -15,7 +16,7 @@ function Button({ label, onClick, type, style, disabled }: Props) {
                 onClick={onClick}
                 type={type}
                 disabled={disabled}
-                className={`custom_button ${style} ${style === "noBackground" && "button_nobg"}`}
+                className={style}
             >
                 {label}
             </button>
