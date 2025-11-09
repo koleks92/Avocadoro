@@ -1,15 +1,19 @@
 @import url("https://fonts.googleapis.com/css2?family=Baloo+Tamma+2:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap");
 
 :root {
     --background-1: #0f0f0f;
     --background-2: #1a1a1a;
     --background-3: #2b2b2b;
     --white: #fafaf8;
-    --primary-green: #6CBF4F;
-    --primary-green-dark: #4F9A39;
-    --accent-green-light: #A7E68A;
-    --accent-green-deep: #2F7A24;
+    --primary-green: #6cbf4f;
+    --primary-green-dark: #4f9a39;
+    --accent-green-light: #a7e68a;
+    --accent-green-deep: #2f7a24;
+}
 
+* {
+    user-select: none;
 }
 
 html,
@@ -25,37 +29,162 @@ body {
     justify-content: center; /* horizontal */
     background-color: var(--background-1);
     color: var(--white);
-    font-family: "Baloo Tamma 2", sans-serif;
+    font-family: "Montserrat", sans-serif;
     margin: auto;
 }
 
-.center_root {
+.warning_span {
+    font-size: 0.9rem;
+    margin: 0.2rem;
+    color: red;
+    text-align: center;
+}
+
+.disabled_span {
+    font-size: 0.9rem;
+    margin: 0.2rem;
+    color: red;
+    text-align: center;
+    visibility: hidden;
+}
+
+.login_root {
     display: flex;
+    width: fit-content;
+    height: 35rem;
+    background-color: var(--background-2);
+    padding: 1rem;
+    border-radius: 2rem;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     margin: auto;
 }
 
+.login_logo_div {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.login_main_div {
+    height: 30rem;
+}
+
+.center_column_div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.center_row_div {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.login_label {
+    font-size: 1.1rem;
+    margin: 0.4rem 0rem;
+}
+
+.login_logo {
+    height: 8rem;
+    transition: 0.2s ease-in-out;
+}
+
+.login_logo:hover {
+    animation: shake 0.8s ease-in-out;
+}
+
 .custom_button {
-  padding: 0.8rem 1.4rem;
-  border: 0.1rem solid var(--primary-green-dark);
-  border-radius: 2rem;
-  background: var(--primary-green);
-  color: var(--white);
-  font-size: 1.4rem;
-  cursor: pointer;
-  transition: 0.2s ease;
+    height: 3rem;
+    padding: 1rem;
+    margin: 0.2rem;
+    border: 0;
+    border-radius: 1rem;
+    background: var(--primary-green);
+    color: var(--white);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.2s ease;
 }
 
 .custom_button:hover {
-  background: var(--primary-green-dark);
+    background: var(--primary-green-dark);
 }
 
+.button_logo {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+}
 
+.button_nobg {
+    background: none;
+    font-size: 0.9rem;
+    margin: 0rem;
+}
+
+.button_nobg:hover {
+    background: none;
+    font-weight: bolder;
+}
+
+.custom_input {
+    padding: 1rem;
+    margin: 0.2rem;
+    border: 0;
+    border-radius: 1rem;
+    background: var(--primary-green);
+    border: 2px solid var(--primary-green);
+    color: var(--white);
+    font-size: 1rem;
+    transition: 0.2s ease;
+}
+
+.custom_input:hover,
+.custom_input:focus {
+    background: var(--primary-green);
+    border: 2px solid var(--primary-green-dark);
+    outline: none;
+}
+
+.custom_input::placeholder {
+    color: var(--white); /* or any color you want */
+    opacity: 0.9; /* optional, browsers sometimes fade placeholders */
+}
 
 /* For developing, remove later */
 .vertical_test {
     display: flex;
     flex-direction: column;
+}
+
+@keyframes shake {
+    0% {
+        transform: translateX(0);
+    }
+    20% {
+        transform: translateX(-6px);
+    }
+    40% {
+        transform: translateX(6px);
+    }
+    60% {
+        transform: translateX(-4px);
+    }
+    80% {
+        transform: translateX(4px);
+    }
+    100% {
+        transform: translateX(0);
+    }
 }
