@@ -6,12 +6,18 @@ import { AvocadoroContext } from "./store/AvocadoroContext";
 import Input from "./components/input";
 import Button from "./components/button";
 import Loading from "./components/loading";
+import { FaGoogle, FaApple } from "react-icons/fa";
+import { SiApple } from "react-icons/si";
+import { IoIosArrowBack } from "react-icons/io";
+import logo from "./images/Logo.png";
+import logoText from "./images/logo_text.png";
 
 export default function Login() {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [confirmPassword, setConfirmPassword] = useState<string>("");
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [message, setMessage] = useState<string>("");
 
     const [signUpView, setSignUpView] = useState<boolean>(false);
     const [signUpMessage, setSignUpMessage] = useState<string>();
@@ -53,6 +59,8 @@ export default function Login() {
     async function signInHandler(e: React.FormEvent): Promise<void> {
         e.preventDefault();
 
+        setMessage("");
+
         // Email validation: must include "@" and "."
         const emailIsInvalid = !email.includes("@") || !email.includes(".");
         setEmailInvalid(emailIsInvalid);
@@ -72,7 +80,7 @@ export default function Login() {
             if (error) {
                 console.error("Signin error:", error);
                 setLoading(false);
-
+                setMessage(error.message);
                 return;
             }
 
@@ -127,7 +135,7 @@ export default function Login() {
         }
     }
 
-    async function handleSignInWithGoogle() {
+    async function handleSignInWithGoogle(): Promise<void> {
         setLoading(true);
 
         const { error } = await supabase.auth.signInWithOAuth({
@@ -143,7 +151,7 @@ export default function Login() {
         }
     }
 
-    async function handleSignInWithApple() {
+    async function handleSignInWithApple(): Promise<void> {
         setLoading(true);
 
         const { error } = await supabase.auth.signInWithOAuth({
@@ -162,30 +170,61 @@ export default function Login() {
         }
     }
 
+    function clearMessages(): void {
+        setMessage("");
+        setPasswordInvalid(false);
+        setEmailInvalid(false);
+        setConfirmPasswordInvalid(false);
+    }
+
     if (loading) {
-        return (
-        <Loading />
-        )
+        return <Loading />;
     }
 
     if (!session) {
         return (
-            <div className="test">
-                {signUpView ? (
+            <div className="login_root">
+                <div className="login_logo_div">
                     <div>
-                        <div>
+                        {signUpView && (
                             <Button
-                                label="Go back"
+                                label={<IoIosArrowBack />}
                                 type="button"
+                                style="custom_button button_logo"
                                 onClick={() => {
-                                    setSignUpView(false);
+                                    {
+                                        setSignUpView(false);
+                                        clearMessages();
+                                    }
                                 }}
                             />
-                        </div>
-
+                        )}
+                    </div>
+                    <img src={logo} alt="Avocadoro" className="login_logo" />
+                    <div style={{ visibility: "hidden" }}>
+                        {signUpView && (
+                            <Button
+                                label={<IoIosArrowBack />}
+                                type="button"
+                                style="custom_button button_logo"
+                                onClick={() => {
+                                    {
+                                        setSignUpView(false);
+                                        clearMessages();
+                                    }
+                                }}
+                            />
+                        )}
+                    </div>
+                </div>
+                <div className="login_main_div">
+                    {signUpView ? (
+                        // Sign Up View
                         <form onSubmit={signUpHandler}>
-                            <div>
-                                <label htmlFor="email">Enter your email</label>
+                            <div className="center_column_div">
+                                <label htmlFor="email" className="login_label">
+                                    Enter your email
+                                </label>
                                 <Input
                                     type="email"
                                     placeholder="Type email"
@@ -193,15 +232,20 @@ export default function Login() {
                                     onChange={(e) => setEmail(e.target.value)}
                                 />
                                 {emailInvalid ? (
-                                    <span style={{ color: "red" }}>
+                                    <span className="warning_span">
                                         Invalid email
                                     </span>
                                 ) : (
-                                    <br />
+                                    <span className="disabled_span">
+                                        Invalid email
+                                    </span>
                                 )}
                             </div>
-                            <div>
-                                <label htmlFor="password">
+                            <div className="center_column_div">
+                                <label
+                                    htmlFor="password"
+                                    className="login_label"
+                                >
                                     Enter your password
                                 </label>
                                 <Input
@@ -213,16 +257,22 @@ export default function Login() {
                                     }
                                 />
                                 {passwordInvalid ? (
-                                    <span style={{ color: "red" }}>
+                                    <span className="warning_span">
                                         Password must be ≥ 10 chars and include
                                         a number
                                     </span>
                                 ) : (
-                                    <br />
+                                    <span className="disabled_span">
+                                        Password must be ≥ 10 chars and include
+                                        a number
+                                    </span>
                                 )}
                             </div>
-                            <div>
-                                <label htmlFor="password">
+                            <div className="center_column_div">
+                                <label
+                                    htmlFor="password"
+                                    className="login_label"
+                                >
                                     Confirm your password
                                 </label>
                                 <Input
@@ -234,77 +284,117 @@ export default function Login() {
                                     }
                                 />
                                 {confirmPasswordInvalid ? (
-                                    <span style={{ color: "red" }}>
+                                    <span className="warning_span">
                                         Typed passwords are not the same
                                     </span>
                                 ) : (
-                                    <br />
+                                    <span className="disabled_span">
+                                        Typed passwords are not the same
+                                    </span>
                                 )}
                             </div>
                             {signUpMessage}
-                            <div>
-                                <Button label="Sign Up" type="submit" />
+                            <div className="center_column_div">
+                                <Button
+                                    label="Sign Up"
+                                    type="submit"
+                                    style="custom_button"
+                                />
                             </div>
                         </form>
-                    </div>
-                ) : (
-                    <form onSubmit={signInHandler}>
-                        <div>
-                            <label htmlFor="email">Enter your email</label>
-                            <Input
-                                type="email"
-                                placeholder="Type email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                            {emailInvalid ? (
-                                <span style={{ color: "red" }}>
-                                    Invalid email
-                                </span>
-                            ) : (
-                                <br />
-                            )}
-                        </div>
-                        <div>
-                            <label htmlFor="password">
-                                Enter your password
-                            </label>
-                            <Input
-                                type="password"
-                                placeholder="Type password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
-                            {passwordInvalid ? (
-                                <span style={{ color: "red" }}>
-                                    Password must be ≥ 10 chars and include a
-                                    number
-                                </span>
-                            ) : (
-                                <br />
-                            )}
-                        </div>
+                    ) : (
+                        // Sign In View
+                        <form onSubmit={signInHandler}>
+                            <div className="center_column_div">
+                                <label htmlFor="email" className="login_label">
+                                    Enter your email
+                                </label>
+                                <Input
+                                    type="email"
+                                    placeholder="Type email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                />
+                                {emailInvalid ? (
+                                    <span className="warning_span">
+                                        Invalid email
+                                    </span>
+                                ) : (
+                                    <span className="disabled_span">
+                                        Invalid email
+                                    </span>
+                                )}
+                            </div>
+                            <div className="center_column_div">
+                                <label
+                                    htmlFor="password"
+                                    className="login_label"
+                                >
+                                    Enter your password
+                                </label>
+                                <Input
+                                    type="password"
+                                    placeholder="Type password"
+                                    value={password}
+                                    onChange={(e) =>
+                                        setPassword(e.target.value)
+                                    }
+                                />
+                                {passwordInvalid ? (
+                                    <span className="warning_span">
+                                        Password must be ≥ 10 chars and include
+                                        a number
+                                    </span>
+                                ) : (
+                                    <span className="disabled_span">
+                                        Password must be ≥ 10 chars and include
+                                        a number
+                                    </span>
+                                )}
+                                {message ? (
+                                    <span className="warning_span">
+                                        Invalid email or password
+                                    </span>
+                                ) : (
+                                    <span className="disabled_span">
+                                        Invalid email or password
+                                    </span>
+                                )}
+                            </div>
 
-                        <div>
-                            <Button label="Log in" type="submit" />
-                            <Button
-                                label="Don't have an account yet"
-                                type="button"
-                                onClick={() => setSignUpView(true)}
-                            />
-                            <Button
-                                type="button"
-                                label="Google"
-                                onClick={() => handleSignInWithGoogle()}
-                            />
-                            <Button
-                                type="button"
-                                label="Apple"
-                                onClick={() => handleSignInWithApple()}
-                            />
-                        </div>
-                    </form>
-                )}
+                            <div className="center_column_div">
+                                <Button
+                                    label="Log in"
+                                    type="submit"
+                                    style="custom_button"
+                                />
+                                <div className="center_row_div">
+                                    <Button
+                                        type="button"
+                                        style="custom_button button_logo"
+                                        label={<FaGoogle />}
+                                        onClick={() => handleSignInWithGoogle()}
+                                    />
+                                    <Button
+                                        type="button"
+                                        style="custom_button button_logo"
+                                        label={<SiApple />}
+                                        onClick={() => handleSignInWithApple()}
+                                    />
+                                </div>
+                                <Button
+                                    label="Don't have an account yet"
+                                    type="button"
+                                    style="custom_button button_nobg"
+                                    onClick={() => {
+                                        setSignUpView(true);
+                                        clearMessages();
+                                    }}
+                                />
+                            </div>
+                        </form>
+                    )}
+                </div>
             </div>
         );
     }
