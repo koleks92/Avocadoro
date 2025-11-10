@@ -4,15 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { AvocadoroContext } from "./store/AvocadoroContext";
 import Loading from "./components/loading";
 import Button from "./components/button";
-import { IoIosLogOut, IoIosAdd } from "react-icons/io";
 import { MdLogout, MdAdd } from "react-icons/md";
-
+import SessionGroup from "./components/sessionGroup";
 
 type SessionGroups = {
     id: string;
     name: string;
-    focus_time: number;
-    break_time: number;
+    focus_timer: number;
+    break_timer: number;
 };
 
 export default function Dashboard() {
@@ -78,7 +77,7 @@ export default function Dashboard() {
                     />
                 </div>
             </div>
-            <div className="vertical_test">
+            <div className="dashboard_session_group_div">
                 {sessionGroups.map((group: SessionGroups) => (
                     <div
                         key={group.id}
@@ -86,7 +85,11 @@ export default function Dashboard() {
                             navigate(`/group/${group.id}`, { state: group })
                         }
                     >
-                        {group.name}
+                        <SessionGroup
+                            name={group.name}
+                            focusTimer={group.focus_timer}
+                            breakTimer={group.break_timer}
+                        />
                     </div>
                 ))}
             </div>

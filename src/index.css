@@ -52,7 +52,7 @@ body {
 /* Components */
 .custom_button {
     display: flex;
-        justify-content: center;
+    justify-content: center;
     align-items: center;
     height: 3rem;
     padding: 1rem;
@@ -108,7 +108,6 @@ body {
     color: var(--white); /* or any color you want */
     opacity: 0.9; /* optional, browsers sometimes fade placeholders */
 }
-
 
 /* Login */
 .login_root {
@@ -166,6 +165,38 @@ body {
     animation: shake 0.8s ease-in-out;
 }
 
+/* Session Group */
+
+.session_group_root {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 18vh;
+    min-width: 10vw;
+    background-color: var(--background-3);
+    padding: 2rem;
+    margin: 1rem;
+    border-radius: 2rem;
+    transition: 0.2s ease;
+}
+
+.session_group_root:hover {
+    background-color: var(--primary-green-dark);
+}
+
+.session_group_title {
+    display: flex;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.session_group_times {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
 /* Dashboard */
 .dashboard_root {
     box-sizing: border-box;
@@ -189,6 +220,22 @@ body {
     font-size: 2rem;
 }
 
+.dashboard_session_group_div {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(10vw, 1fr));
+    max-height: 70vh;
+    width: 90%;
+    padding: 2rem;
+    margin: 1rem;
+    justify-content: start;
+    overflow-y: auto;
+    overflow-x: hidden; /* avoid horizontal scrolling */
+    scrollbar-width: thick;
+    scrollbar-color: var(--primary-green) transparent;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch; /* smoother friction */
+    position: relative;
+}
 
 /* For developing, remove later */
 .vertical_test {
