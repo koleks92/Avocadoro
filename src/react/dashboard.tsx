@@ -2,7 +2,11 @@ import "../index.css";
 import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AvocadoroContext } from "./store/AvocadoroContext";
-import { ThreeDot } from "react-loading-indicators";
+import Loading from "./components/loading";
+import Button from "./components/button";
+import { IoIosLogOut, IoIosAdd } from "react-icons/io";
+import { MdLogout, MdAdd } from "react-icons/md";
+
 
 type SessionGroups = {
     id: string;
@@ -50,29 +54,30 @@ export default function Dashboard() {
     }
 
     if (loading) {
-        return (
-            <div className="test">
-                <ThreeDot
-                    color="#32cd32"
-                    size="medium"
-                    text=""
-                    textColor=""
-                />{" "}
-            </div>
-        );
+        return <Loading />;
     }
 
     return (
-        <div className="vertical_test">
-            <button onClick={signOut}>Log out</button>
-            Dashboard
-            <button
-                onClick={() => {
-                    navigate("/add_group");
-                }}
-            >
-                Add new group
-            </button>
+        <div className="dashboard_root">
+            <div className="dashboard_logo_div">
+                <div>
+                    <Button
+                        onClick={signOut}
+                        type="button"
+                        style="custom_button button_logo_dashboard"
+                        label={<MdLogout />}
+                    />
+                </div>
+                <span className="dashboard_title_span">My sessions</span>
+                <div>
+                    <Button
+                        onClick={() => navigate("/add_group")}
+                        type="button"
+                        style="custom_button button_logo_dashboard"
+                        label={<MdAdd />}
+                    />
+                </div>
+            </div>
             <div className="vertical_test">
                 {sessionGroups.map((group: SessionGroups) => (
                     <div
