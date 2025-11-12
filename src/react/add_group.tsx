@@ -155,7 +155,7 @@ export default function AddGroup() {
                     </div>
                     <div className="center_column_div">
                         <label htmlFor="focusTimer" className="add_group_label">
-                            Enter focus time in minutes
+                            Select focus time in minutes
                         </label>
                         <TimeSelector
                             min={5}
@@ -167,7 +167,7 @@ export default function AddGroup() {
                     </div>
                     <div className="center_column_div">
                         <label htmlFor="breakTimer" className="add_group_label">
-                            Enter break time in minutes
+                            Select break time in minutes
                         </label>
                         <TimeSelector
                             min={5}
