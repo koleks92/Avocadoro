@@ -67,7 +67,7 @@ export default function Dashboard() {
                         label={<MdLogout />}
                     />
                 </div>
-                <span className="dashboard_title_span">My sessions</span>
+                <span className="dashboard_title_span">My session groups</span>
                 <div>
                     <Button
                         onClick={() => navigate("/add_group")}
