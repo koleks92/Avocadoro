@@ -109,6 +109,19 @@ body {
     opacity: 0.9; /* optional, browsers sometimes fade placeholders */
 }
 
+.time_selector_div {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(1vw, 1fr));
+}
+
+.time_selector_button {
+    width: 3rem;
+}
+
+.time_selector_selected {
+    border: 2px solid var(--white);
+}
+
 /* Login */
 .login_root {
     display: flex;
@@ -124,11 +137,13 @@ body {
 }
 
 .login_logo_div,
-.dashboard_logo_div {
+.dashboard_logo_div,
+.add_group_div {
     display: flex;
     width: 100%;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
 }
 
 .login_main_div {
@@ -235,6 +250,41 @@ body {
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch; /* smoother friction */
     position: relative;
+}
+
+/* Add group session */
+.add_group_root {
+    display: flex;
+    justify-content: flex-start;
+    width: fit-content;
+    width: 35rem;
+    background-color: var(--background-2);
+    padding: 2rem;
+    border-radius: 2rem;
+    flex-direction: column;
+    align-items: center;
+    margin: auto;
+}
+
+.add_group_title_span {
+    font-size: 1.7rem;
+    font-weight: bold;
+}
+
+.add_group_main {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+}
+
+.add_group_label {
+    font-size: 1.1rem;
+    margin: 0.4rem 0rem;
+}
+
+.extra_margin {
+    margin-top: 2rem;
 }
 
 /* For developing, remove later */

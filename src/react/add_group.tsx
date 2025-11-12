@@ -3,11 +3,16 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { AvocadoroContext } from "./store/AvocadoroContext";
 import Input from "./components/input";
 import Button from "./components/button";
+import { IoIosArrowBack } from "react-icons/io";
+import TimeSelector from "./components/timeSelector";
+import Loading from "./components/loading";
 
 export default function AddGroup() {
     const { id } = useParams<{ id: string }>();
     const { state } = useLocation();
     const navigate = useNavigate();
+
+    const [loading, setLoading] = useState<boolean>(true);
 
     const [name, setName] = useState<string>("");
     const [focusTimer, setFocusTimer] = useState<number>(25);
@@ -21,7 +26,9 @@ export default function AddGroup() {
             setName(state.name);
             setFocusTimer(state.focus_timer);
             setBreakTimer(state.break_timer);
+            console.log(state.focus_timer);
         }
+        setLoading(false);
     }, [id]);
 
     async function addNewGroupHandler(e: React.FormEvent): Promise<void> {
@@ -55,7 +62,6 @@ export default function AddGroup() {
         }
 
         if (existingGroup && existingGroup.id != state?.id) {
-            
             setMessage("You already have a group with that name.");
             return;
         }
@@ -101,49 +107,86 @@ export default function AddGroup() {
         }
     }
 
+    if (loading) {
+        return <Loading />;
+    }
+
     return (
-        <div className="vertical_test">
-            <Button
-                label="Go Back"
-                type="button"
-                onClick={() => {
-                    navigate("/dashboard");
-                }}
-            />
-            {state?.edit ? (
-                <span>Edit avocadoro group</span>
-            ) : (
-                <span>Add new avocadoro group</span>
-            )}
-            <form onSubmit={addNewGroupHandler}>
-                <label>Enter new avocadoro focus name</label>
-                <Input
-                    type="text"
-                    placeholder="Avocadoro name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                />
-                <label>Enter focus time in minutes</label>
-                <Input
-                    type="number"
-                    min={1}
-                    max={60}
-                    placeholder="Focus time"
-                    value={focusTimer}
-                    onChange={(e) => setFocusTimer(Number(e.target.value))}
-                />
-                <label>Enter break time in minutes</label>
-                <Input
-                    type="number"
-                    min={1}
-                    max={60}
-                    placeholder="Break time"
-                    value={breakTimer}
-                    onChange={(e) => setBreakTimer(Number(e.target.value))}
-                />
-                <Button label={state?.edit ? "Update" : "Add"} type="submit" />
-            </form>
-            <span>{message}</span>
+        <div className="add_group_root">
+            <div className="login_logo_div">
+                <div>
+                    <Button
+                        label={<IoIosArrowBack />}
+                        type="button"
+                        style="custom_button button_logo"
+                        onClick={() => {
+                            navigate("/dashboard");
+                        }}
+                    />
+                </div>
+                <span className="add_group_title_span">
+                    {state?.edit
+                        ? "Edit session group"
+                        : "Add new session group"}
+                </span>
+                <div style={{ visibility: "hidden" }}>
+                    <Button
+                        label={<IoIosArrowBack />}
+                        type="button"
+                        style="custom_button button_logo"
+                        onClick={() => {
+                            navigate("/dashboard");
+                        }}
+                    />
+                </div>
+            </div>
+            <div className="add_group_main">
+                <form onSubmit={addNewGroupHandler}>
+                    <div className="center_column_div">
+                        <label htmlFor="name" className="add_group_label">
+                            Enter new session name
+                        </label>
+                        <Input
+                            type="text"
+                            placeholder="Avocadoro name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                        />
+                    </div>
+                    <div className="center_column_div">
+                        <label htmlFor="focusTimer" className="add_group_label">
+                            Enter focus time in minutes
+                        </label>
+                        <TimeSelector
+                            min={5}
+                            max={60}
+                            step={5}
+                            defaultValue={focusTimer}
+                            onClick={(time) => setFocusTimer(time)}
+                        />
+                    </div>
+                    <div className="center_column_div">
+                        <label htmlFor="breakTimer" className="add_group_label">
+                            Enter break time in minutes
+                        </label>
+                        <TimeSelector
+                            min={5}
+                            max={60}
+                            step={5}
+                            defaultValue={breakTimer}
+                            onClick={(time) => setBreakTimer(time)}
+                        />
+                    </div>
+                    <div className="center_column_div extra_margin">
+                        <Button
+                            label={state?.edit ? "Update" : "Add"}
+                            type="submit"
+                            style="custom_button"
+                        />
+                    </div>
+                </form>
+                <span>{message}</span>
+            </div>
         </div>
     );
 }
