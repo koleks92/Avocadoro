@@ -12,6 +12,7 @@ type SessionGroups = {
     name: string;
     focus_timer: number;
     break_timer: number;
+    total_minutes: number;
 };
 
 export default function Dashboard() {
@@ -23,19 +24,35 @@ export default function Dashboard() {
 
     useEffect(() => {
         const loadGroups = async () => {
-            if (!session || !session.user) return; // Wait until session is ready
+            // Wait until session is ready
+            if (!session || !session.user) return;
 
             setLoading(true);
 
             const { data, error } = await supabase
                 .from("session_groups")
-                .select("*")
+                .select(
+                    `
+                    id,
+                    name,
+                    focus_timer,
+                    break_timer,
+                    sessions ( duration_minutes )
+                    `
+                )
                 .eq("user_id", session.user.id);
 
             if (error) {
                 console.error("Error loading groups:", error);
             } else {
-                setSessionGroups(data);
+                const groupsWithTotals = data.map((group) => ({
+                    ...group,
+                    total_minutes: group.sessions.reduce(
+                        (sum, s) => sum + s.duration_minutes,
+                        0
+                    ),
+                }));
+                setSessionGroups(groupsWithTotals);
             }
 
             setTimeout(() => {
@@ -44,7 +61,7 @@ export default function Dashboard() {
         };
 
         loadGroups();
-    }, [session]); // 👈 This reruns whenever session changes
+    }, [session]);
 
     async function signOut(): Promise<void> {
         const { error } = await supabase.auth.signOut();
@@ -89,6 +106,7 @@ export default function Dashboard() {
                             name={group.name}
                             focusTimer={group.focus_timer}
                             breakTimer={group.break_timer}
+                            totalMinutes={group.total_minutes}
                         />
                     </div>
                 ))}
