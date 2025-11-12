@@ -289,6 +289,10 @@ body {
     margin-top: 2rem;
 }
 
+.delete_span_text {
+    margin-top: 2rem;
+}
+
 /* For developing, remove later */
 .vertical_test {
     display: flex;
