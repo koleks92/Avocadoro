@@ -152,6 +152,11 @@ export default function AddGroup() {
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                         />
+                        {message ? (
+                            <span className="warning_span">{message}</span>
+                        ) : (
+                            <span className="disabled_span">Hidden message</span>
+                        )}
                     </div>
                     <div className="center_column_div">
                         <label htmlFor="focusTimer" className="add_group_label">
@@ -185,7 +190,6 @@ export default function AddGroup() {
                         />
                     </div>
                 </form>
-                <span>{message}</span>
             </div>
         </div>
     );
