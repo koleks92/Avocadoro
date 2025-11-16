@@ -7,7 +7,6 @@ import { IoIosPause } from "react-icons/io";
 import { IoIosPlay } from "react-icons/io";
 import { IoIosRefresh } from "react-icons/io";
 
-
 type timerModeType = "focus" | "break";
 
 type TimerProps = {
@@ -60,6 +59,7 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
     }, [seconds, minutes]);
 
     const start = (): void => {
+        setMessage("");
         if (timerRef.current !== null) return; // prevent multiple intervals
         timerRef.current = window.setInterval(() => {
             setSeconds((prev) => prev - 1);
@@ -67,6 +67,7 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
     };
 
     const stop = (): void => {
+        setMessage("");
         if (timerRef.current !== null) {
             clearInterval(timerRef.current);
             timerRef.current = null;
@@ -74,6 +75,7 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
     };
 
     const reset = (): void => {
+        setMessage("");
         if (timerRef.current !== null) {
             clearInterval(timerRef.current);
         }
@@ -89,7 +91,6 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
             <span className="timer_time_span">
                 {minutes}:{seconds}
             </span>
-            <span>{message}</span>
             <div className="timer_button_div">
                 <Button
                     type="button"
@@ -107,10 +108,13 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
             <Button
                 type="button"
                 style="custom_button timer_button_restart"
-                label={<IoIosRefresh />
-}
-                onClick={() => reset()}
+                label={<IoIosRefresh />}
+                onClick={() => {
+                    setMessage("Double click for reset");
+                }}
+                onDoubleClick={() => reset()}
             />
+            <span>{message}</span>
         </div>
     );
 }
