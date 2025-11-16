@@ -4,16 +4,25 @@ import { ReactNode } from "react";
 type Props = {
     label: ReactNode;
     onClick?: () => void;
+    onDoubleClick?: () => void;
     type: "button" | "submit" | "reset";
     style?: string;
     disabled?: boolean;
 };
 
-function Button({ label, onClick, type, style, disabled }: Props) {
+function Button({
+    label,
+    onClick,
+    onDoubleClick,
+    type,
+    style,
+    disabled,
+}: Props) {
     return (
         <div>
             <button
                 onClick={onClick}
+                onDoubleClick={onDoubleClick}
                 type={type}
                 disabled={disabled}
                 className={style}
