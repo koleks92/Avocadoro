@@ -3,15 +3,20 @@ import "../../index.css";
 import { useEffect, useRef, useState } from "react";
 import Button from "./button";
 
+import { IoIosPause } from "react-icons/io";
+import { IoIosPlay } from "react-icons/io";
+import { IoIosRefresh } from "react-icons/io";
+
+
 type timerModeType = "focus" | "break";
 
 type TimerProps = {
     onComplete?: (minutes: number) => void;
     focus_timer?: number;
-    break_timer?: number
-}
+    break_timer?: number;
+};
 
-function Timer({onComplete, focus_timer, break_timer}: TimerProps) {
+function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
     const [focusTimer, setFocusTimer] = useState<number>(focus_timer);
     const [breakTimer, setBreakTimer] = useState<number>(break_timer);
 
@@ -24,9 +29,7 @@ function Timer({onComplete, focus_timer, break_timer}: TimerProps) {
 
     const timerRef = useRef<number | null>(null);
 
-    useEffect(() => {
-
-    })
+    useEffect(() => {});
 
     useEffect(() => {
         if (timerRef.current === null) return;
@@ -79,13 +82,35 @@ function Timer({onComplete, focus_timer, break_timer}: TimerProps) {
         setSeconds(0);
     };
     return (
-        <div className="vertical_test">
-            <span>Timer</span>
-            {minutes}:{seconds}
+        <div className="timer_root">
+            <span className="timer_title_span">
+                {timerMode === "break" ? "Break" : "Focus"}
+            </span>
+            <span className="timer_time_span">
+                {minutes}:{seconds}
+            </span>
             <span>{message}</span>
-            <Button type="button" label="Start" onClick={() => start()} />
-            <Button type="button" label="Stop" onClick={() => stop()} />
-            <Button type="button" label="Reset" onClick={() => reset()} />
+            <div className="timer_button_div">
+                <Button
+                    type="button"
+                    style="custom_button timer_button_main"
+                    label={<IoIosPlay />}
+                    onClick={() => start()}
+                />
+                <Button
+                    type="button"
+                    label={<IoIosPause />}
+                    style="custom_button timer_button_main"
+                    onClick={() => stop()}
+                />
+            </div>
+            <Button
+                type="button"
+                style="custom_button timer_button_restart"
+                label={<IoIosRefresh />
+}
+                onClick={() => reset()}
+            />
         </div>
     );
 }
