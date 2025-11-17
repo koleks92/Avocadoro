@@ -78,7 +78,7 @@ export default function Group() {
             <div className="group_logo_div">
                 <div>
                     <Button
-                        onClick={() => navigate("/dashboard")}
+                        onClick={() => navigate(-1)}
                         type="button"
                         style="custom_button button_logo_dashboard"
                         label={<IoIosArrowBack />}

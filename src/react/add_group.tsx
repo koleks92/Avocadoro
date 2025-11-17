@@ -175,7 +175,7 @@ export default function AddGroup() {
                                 type="button"
                                 style="custom_button button_logo"
                                 onClick={() => {
-                                    navigate("/dashboard");
+                                    navigate(-1);
                                 }}
                             />
                         </div>
