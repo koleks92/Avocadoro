@@ -8,6 +8,7 @@ import { MdDeleteOutline } from "react-icons/md";
 
 import TimeSelector from "./components/timeSelector";
 import Loading from "./components/loading";
+import MotionDiv from "./components/motionDiv";
 
 export default function AddGroup() {
     const { id } = useParams<{ id: string }>();
@@ -125,155 +126,157 @@ export default function AddGroup() {
         }
     }
 
-    if (loading) {
-        return <Loading />;
-    }
+
 
     return (
-        <div className="add_group_root">
-            {deleteView ? (
-                <>
-                    <div className="login_logo_div">
-                        <div>
-                            <Button
-                                label={<IoIosArrowBack />}
-                                type="button"
-                                style="custom_button button_logo"
-                                onClick={() => {
-                                    setDeleteView(false);
-                                }}
-                            />
-                        </div>
-                        <span className="add_group_title_span">
-                            Are you sure ?
-                        </span>
+        <MotionDiv>
+            <div className="add_group_root">
+                {deleteView ? (
+                    <>
+                        <div className="login_logo_div">
+                            <div>
+                                <Button
+                                    label={<IoIosArrowBack />}
+                                    type="button"
+                                    style="custom_button button_logo"
+                                    onClick={() => {
+                                        setDeleteView(false);
+                                    }}
+                                />
+                            </div>
+                            <span className="add_group_title_span">
+                                Are you sure ?
+                            </span>
 
-                        <div>
-                            <Button
-                                label={<MdDeleteOutline />}
-                                type="button"
-                                style="custom_button button_logo"
-                                onClick={() => {
-                                    deleteGroup();
-                                }}
-                            />
-                        </div>
-                    </div>
-                    <div className="add_group_main">
-                        <span className="delete_span_text">
-                            This will delete your session group and all your
-                            focus minutes!
-                        </span>
-                    </div>
-                </>
-            ) : (
-                <>
-                    <div className="login_logo_div">
-                        <div>
-                            <Button
-                                label={<IoIosArrowBack />}
-                                type="button"
-                                style="custom_button button_logo"
-                                onClick={() => {
-                                    navigate(-1);
-                                }}
-                            />
-                        </div>
-                        <span className="add_group_title_span">
-                            {state?.edit
-                                ? "Edit session group"
-                                : "Add new session group"}
-                        </span>
-                        {state?.edit ? (
                             <div>
                                 <Button
                                     label={<MdDeleteOutline />}
                                     type="button"
                                     style="custom_button button_logo"
                                     onClick={() => {
-                                        setDeleteView(true);
+                                        deleteGroup();
                                     }}
                                 />
                             </div>
-                        ) : (
-                            <div style={{ visibility: "hidden" }}>
+                        </div>
+                        <div className="add_group_main">
+                            <span className="delete_span_text">
+                                This will delete your session group and all your
+                                focus minutes!
+                            </span>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <div className="login_logo_div">
+                            <div>
                                 <Button
                                     label={<IoIosArrowBack />}
                                     type="button"
                                     style="custom_button button_logo"
                                     onClick={() => {
-                                        navigate("/dashboard");
+                                        navigate(-1);
                                     }}
                                 />
                             </div>
-                        )}
-                    </div>
-                    <div className="add_group_main">
-                        <form onSubmit={addNewGroupHandler}>
-                            <div className="center_column_div">
-                                <label
-                                    htmlFor="name"
-                                    className="add_group_label"
-                                >
-                                    Enter new session name
-                                </label>
-                                <Input
-                                    type="text"
-                                    placeholder="Avocadoro name"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                />
-                                {message ? (
-                                    <span className="warning_span">
-                                        {message}
-                                    </span>
-                                ) : (
-                                    <span className="disabled_span">
-                                        Hidden message
-                                    </span>
-                                )}
-                            </div>
-                            <div className="center_column_div">
-                                <label
-                                    htmlFor="focusTimer"
-                                    className="add_group_label"
-                                >
-                                    Select focus time in minutes
-                                </label>
-                                <TimeSelector
-                                    min={5}
-                                    max={60}
-                                    step={5}
-                                    defaultValue={focusTimer}
-                                    onClick={(time) => setFocusTimer(time)}
-                                />
-                            </div>
-                            <div className="center_column_div">
-                                <label
-                                    htmlFor="breakTimer"
-                                    className="add_group_label"
-                                >
-                                    Select break time in minutes
-                                </label>
-                                <TimeSelector
-                                    min={5}
-                                    max={60}
-                                    step={5}
-                                    defaultValue={breakTimer}
-                                    onClick={(time) => setBreakTimer(time)}
-                                />
-                            </div>
-                            <div className="center_column_div extra_margin">
-                                <Button
-                                    label={state?.edit ? "Update" : "Add"}
-                                    type="submit"
-                                    style="custom_button"
-                                />
-                            </div>
-                        </form>
-                    </div>
-                </>
-            )}
-        </div>
+                            <span className="add_group_title_span">
+                                {state?.edit
+                                    ? "Edit session group"
+                                    : "Add new session group"}
+                            </span>
+                            {state?.edit ? (
+                                <div>
+                                    <Button
+                                        label={<MdDeleteOutline />}
+                                        type="button"
+                                        style="custom_button button_logo"
+                                        onClick={() => {
+                                            setDeleteView(true);
+                                        }}
+                                    />
+                                </div>
+                            ) : (
+                                <div style={{ visibility: "hidden" }}>
+                                    <Button
+                                        label={<IoIosArrowBack />}
+                                        type="button"
+                                        style="custom_button button_logo"
+                                        onClick={() => {
+                                            navigate("/dashboard");
+                                        }}
+                                    />
+                                </div>
+                            )}
+                        </div>
+                        <div className="add_group_main">
+                            <form onSubmit={addNewGroupHandler}>
+                                <div className="center_column_div">
+                                    <label
+                                        htmlFor="name"
+                                        className="add_group_label"
+                                    >
+                                        Enter new session name
+                                    </label>
+                                    <Input
+                                        type="text"
+                                        placeholder="Avocadoro name"
+                                        value={name}
+                                        onChange={(e) =>
+                                            setName(e.target.value)
+                                        }
+                                    />
+                                    {message ? (
+                                        <span className="warning_span">
+                                            {message}
+                                        </span>
+                                    ) : (
+                                        <span className="disabled_span">
+                                            Hidden message
+                                        </span>
+                                    )}
+                                </div>
+                                <div className="center_column_div">
+                                    <label
+                                        htmlFor="focusTimer"
+                                        className="add_group_label"
+                                    >
+                                        Select focus time in minutes
+                                    </label>
+                                    <TimeSelector
+                                        min={5}
+                                        max={60}
+                                        step={5}
+                                        defaultValue={focusTimer}
+                                        onClick={(time) => setFocusTimer(time)}
+                                    />
+                                </div>
+                                <div className="center_column_div">
+                                    <label
+                                        htmlFor="breakTimer"
+                                        className="add_group_label"
+                                    >
+                                        Select break time in minutes
+                                    </label>
+                                    <TimeSelector
+                                        min={5}
+                                        max={60}
+                                        step={5}
+                                        defaultValue={breakTimer}
+                                        onClick={(time) => setBreakTimer(time)}
+                                    />
+                                </div>
+                                <div className="center_column_div extra_margin">
+                                    <Button
+                                        label={state?.edit ? "Update" : "Add"}
+                                        type="submit"
+                                        style="custom_button"
+                                    />
+                                </div>
+                            </form>
+                        </div>
+                    </>
+                )}
+            </div>
+        </MotionDiv>
     );
 }

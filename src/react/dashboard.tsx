@@ -6,6 +6,7 @@ import Loading from "./components/loading";
 import Button from "./components/button";
 import { MdLogout, MdAdd } from "react-icons/md";
 import SessionGroup from "./components/sessionGroup";
+import MotionDiv from "./components/motionDiv";
 
 type SessionGroups = {
     id: string;
@@ -16,7 +17,6 @@ type SessionGroups = {
 };
 
 export default function Dashboard() {
-    const [loading, setLoading] = useState<boolean>(true);
     const [sessionGroups, setSessionGroups] = useState<SessionGroups[]>([]);
 
     const { session, supabase } = useContext(AvocadoroContext);
@@ -26,8 +26,6 @@ export default function Dashboard() {
         const loadGroups = async () => {
             // Wait until session is ready
             if (!session || !session.user) return;
-
-            setLoading(true);
 
             const { data, error } = await supabase
                 .from("session_groups")
@@ -54,10 +52,6 @@ export default function Dashboard() {
                 }));
                 setSessionGroups(groupsWithTotals);
             }
-
-            setTimeout(() => {
-                setLoading(false);
-            }, 500);
         };
 
         loadGroups();
@@ -69,48 +63,51 @@ export default function Dashboard() {
         navigate("/");
     }
 
-    if (loading) {
-        return <Loading />;
-    }
 
-    return (
-        <div className="dashboard_root">
-            <div className="dashboard_logo_div">
-                <div>
-                    <Button
-                        onClick={signOut}
-                        type="button"
-                        style="custom_button button_logo_dashboard"
-                        label={<MdLogout />}
-                    />
-                </div>
-                <span className="dashboard_title_span">My session groups</span>
-                <div>
-                    <Button
-                        onClick={() => navigate("/add_group")}
-                        type="button"
-                        style="custom_button button_logo_dashboard"
-                        label={<MdAdd />}
-                    />
-                </div>
-            </div>
-            <div className="dashboard_session_group_div">
-                {sessionGroups.map((group: SessionGroups) => (
-                    <div
-                        key={group.id}
-                        onClick={() =>
-                            navigate(`/group/${group.id}`, { state: group })
-                        }
-                    >
-                        <SessionGroup
-                            name={group.name}
-                            focusTimer={group.focus_timer}
-                            breakTimer={group.break_timer}
-                            totalMinutes={group.total_minutes}
-                        />
+        return (
+            <MotionDiv>
+                <div className="dashboard_root">
+                    <div className="dashboard_logo_div">
+                        <div>
+                            <Button
+                                onClick={signOut}
+                                type="button"
+                                style="custom_button button_logo_dashboard"
+                                label={<MdLogout />}
+                            />
+                        </div>
+                        <span className="dashboard_title_span">
+                            My session groups
+                        </span>
+                        <div>
+                            <Button
+                                onClick={() => navigate("/add_group")}
+                                type="button"
+                                style="custom_button button_logo_dashboard"
+                                label={<MdAdd />}
+                            />
+                        </div>
                     </div>
-                ))}
-            </div>
-        </div>
-    );
+                    <div className="dashboard_session_group_div">
+                        {sessionGroups.map((group: SessionGroups) => (
+                            <div
+                                key={group.id}
+                                onClick={() =>
+                                    navigate(`/group/${group.id}`, {
+                                        state: group,
+                                    })
+                                }
+                            >
+                                <SessionGroup
+                                    name={group.name}
+                                    focusTimer={group.focus_timer}
+                                    breakTimer={group.break_timer}
+                                    totalMinutes={group.total_minutes}
+                                />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </MotionDiv>
+        );
 }

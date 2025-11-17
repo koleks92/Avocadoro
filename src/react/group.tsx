@@ -7,6 +7,7 @@ import { IoIosArrowBack, IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { IoPencil } from "react-icons/io5";
 import AvocadoroPrint from "./components/avocadoroPrint";
 import logoNoSpace from "./images/logo_nospace.png";
+import MotionDiv from "./components/motionDiv";
 
 export default function Group() {
     const { id } = useParams<{ id: string }>();
@@ -75,99 +76,101 @@ export default function Group() {
     }
 
     return (
-        <div className="group_root">
-            <div className="group_logo_div">
-                <div>
-                    <Button
-                        onClick={() => navigate(-1)}
-                        type="button"
-                        style="custom_button button_logo_dashboard"
-                        label={<IoIosArrowBack />}
-                    />
+        <MotionDiv>
+            <div className="group_root">
+                <div className="group_logo_div">
+                    <div>
+                        <Button
+                            onClick={() => navigate(-1)}
+                            type="button"
+                            style="custom_button button_logo_dashboard"
+                            label={<IoIosArrowBack />}
+                        />
+                    </div>
+                    <span className="dashboard_title_span">{state.name}</span>
+                    <div>
+                        <Button
+                            onClick={() => {
+                                navigate(`/edit_group/${state.id}`, {
+                                    state: { ...state, edit: true },
+                                });
+                            }}
+                            type="button"
+                            style="custom_button button_logo_group"
+                            label={<IoPencil />}
+                        />
+                    </div>
                 </div>
-                <span className="dashboard_title_span">{state.name}</span>
-                <div>
-                    <Button
-                        onClick={() => {
-                            navigate(`/edit_group/${state.id}`, {
-                                state: { ...state, edit: true },
-                            });
-                        }}
-                        type="button"
-                        style="custom_button button_logo_group"
-                        label={<IoPencil />}
-                    />
-                </div>
-            </div>
-            <div className="group_div_main">
-                {/* Results view */}
-                <div
-                    className={`group_result_div ${timerView ? "group_hidden_view" : "group_shown_view"}`}
-                >
-                    <div className="group_second_div">
-                        <div className="group_second_div_top">
-                            <div className="group_second_div_top_div">
-                                <img
-                                    src={logoNoSpace}
-                                    className="avocadoro_print_image"
-                                />{" "}
-                                <span className="group_second_div_top_text">
-                                    = 30m
-                                    </span> 
+                <div className="group_div_main">
+                    {/* Results view */}
+                    <div
+                        className={`group_result_div ${timerView ? "group_hidden_view" : "group_shown_view"}`}
+                    >
+                        <div className="group_second_div">
+                            <div className="group_second_div_top">
+                                <div className="group_second_div_top_div">
+                                    <img
+                                        src={logoNoSpace}
+                                        className="avocadoro_print_image"
+                                    />{" "}
+                                    <span className="group_second_div_top_text">
+                                        = 30m
+                                    </span>
+                                </div>
+                                <div className="group_second_text">
+                                    <span className="group_second_div_title">
+                                        Total focus time
+                                    </span>
+                                    <span className="group_second_div_time">
+                                        {" "}
+                                        {totalTime}
+                                    </span>
+                                </div>
+                                <div style={{ visibility: "hidden" }}>
+                                    <img
+                                        src={logoNoSpace}
+                                        className="avocadoro_print_image"
+                                    />{" "}
+                                    - 30m
+                                </div>
                             </div>
-                            <div className="group_second_text">
-                                <span className="group_second_div_title">
-                                    Total focus time
-                                </span>
-                                <span className="group_second_div_time">
-                                    {" "}
-                                    {totalTime}
-                                </span>
-                            </div>
-                            <div style={{visibility: "hidden"}}>
-                                <img
-                                    src={logoNoSpace}
-                                    className="avocadoro_print_image"
-                                />{" "}
-                                - 30m
-                            </div>
+                            <AvocadoroPrint amount={avocadoroAmount} />
+                            {message}
                         </div>
-                        <AvocadoroPrint amount={avocadoroAmount} />
-                        {message}
-                    </div>
 
-                    <div className="group_button_div">
-                        <Button
-                            onClick={() => setTimerView(true)}
-                            type="button"
-                            style="custom_button button_logo_group"
-                            label={<IoIosArrowUp />}
-                        />
+                        <div className="group_button_div">
+                            <Button
+                                onClick={() => setTimerView(true)}
+                                type="button"
+                                style="custom_button button_logo_group"
+                                label={<IoIosArrowUp />}
+                            />
+                        </div>
                     </div>
-                </div>
-                {/* Timer view */}
-                <div
-                    className={`group_timer_div ${timerView ? "group_shown_view" : "group_hidden_view"}`}
-                >
-                    <div className="group_button_div">
-                        <Button
-                            onClick={() => setTimerView(false)}
-                            type="button"
-                            style="custom_button button_logo_group"
-                            label={<IoIosArrowDown />}
-                        />
-                    </div>
+                    {/* Timer view */}
+                    <div
+                        className={`group_timer_div ${timerView ? "group_shown_view" : "group_hidden_view"}`}
+                    >
+                        <div className="group_button_div">
+                            <Button
+                                onClick={() => setTimerView(false)}
+                                type="button"
+                                style="custom_button button_logo_group"
+                                label={<IoIosArrowDown />}
+                            />
+                        </div>
 
-                    <div className="group_second_div">
-                        <Timer
-                            onComplete={onCompleteHandler}
-                            focus_timer={state.focus_timer}
-                            break_timer={state.break_timer}
-                        />
-                        {message}
+                        <div className="group_second_div">
+                            <Timer
+                                onComplete={onCompleteHandler}
+                                focus_timer={state.focus_timer}
+                                break_timer={state.break_timer}
+                            />
+                            {message}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </MotionDiv>
     );
 }

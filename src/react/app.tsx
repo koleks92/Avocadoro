@@ -1,22 +1,13 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import { createRoot } from "react-dom/client";
-import Login from "./login";
-import Dashboard from "./dashboard";
-import AddGroup from "./add_group";
 import { AvocadoroProvider } from "./store/AvocadoroContext";
-import Group from "./group";
+import AnimatedRoutes from "./components/animatedRoutes";
 
 export default function App() {
     return (
         <BrowserRouter>
             <AvocadoroProvider>
-                <Routes>
-                    <Route path="/" element={<Login />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/add_group" element={<AddGroup />} />
-                    <Route path="/group/:id" element={<Group />} />
-                    <Route path="/edit_group/:id" element={<AddGroup />} />
-                </Routes>
+                <AnimatedRoutes />
             </AvocadoroProvider>
         </BrowserRouter>
     );
