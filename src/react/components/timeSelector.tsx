@@ -28,6 +28,7 @@ function TimeSelector({ min, max, step, defaultValue, onClick }: TimeSelectorPro
                 return (
                     <Button
                         type="button"
+                        key={time}
                         label={time}
                         style={`custom_button time_selector_button ${selected === time ? "time_selector_selected" : ""}`}
                         onClick={() => setSelected(time)}
