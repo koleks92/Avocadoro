@@ -6,6 +6,7 @@ import Button from "./components/button";
 import { IoIosArrowBack, IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { IoPencil } from "react-icons/io5";
 import AvocadoroPrint from "./components/avocadoroPrint";
+import logoNoSpace from "./images/logo_nospace.png";
 
 export default function Group() {
     const { id } = useParams<{ id: string }>();
@@ -104,13 +105,33 @@ export default function Group() {
                     className={`group_result_div ${timerView ? "group_hidden_view" : "group_shown_view"}`}
                 >
                     <div className="group_second_div">
-                        <span className="group_second_div_title">
-                            Total focus time
-                        </span>
-                        <span className="group_second_div_time">
-                            {" "}
-                            {totalTime}
-                        </span>
+                        <div className="group_second_div_top">
+                            <div className="group_second_div_top_div">
+                                <img
+                                    src={logoNoSpace}
+                                    className="avocadoro_print_image"
+                                />{" "}
+                                <span className="group_second_div_top_text">
+                                    = 30m
+                                    </span> 
+                            </div>
+                            <div className="group_second_text">
+                                <span className="group_second_div_title">
+                                    Total focus time
+                                </span>
+                                <span className="group_second_div_time">
+                                    {" "}
+                                    {totalTime}
+                                </span>
+                            </div>
+                            <div style={{visibility: "hidden"}}>
+                                <img
+                                    src={logoNoSpace}
+                                    className="avocadoro_print_image"
+                                />{" "}
+                                - 30m
+                            </div>
+                        </div>
                         <AvocadoroPrint amount={avocadoroAmount} />
                         {message}
                     </div>
