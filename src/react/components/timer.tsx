@@ -7,6 +7,9 @@ import { IoIosPause } from "react-icons/io";
 import { IoIosPlay } from "react-icons/io";
 import { IoIosRefresh } from "react-icons/io";
 
+import breakTimeSound from "../../../sounds/breakTime.mp3";
+import focusTimeSound from "../../../sounds/focusTime.mp3";
+
 type timerModeType = "focus" | "break";
 
 type TimerProps = {
@@ -16,8 +19,8 @@ type TimerProps = {
 };
 
 function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
-    const [focusTimer, setFocusTimer] = useState<number>(focus_timer);
-    const [breakTimer, setBreakTimer] = useState<number>(break_timer);
+    const [focusTimer, setFocusTimer] = useState<number>(1);
+    const [breakTimer, setBreakTimer] = useState<number>(1);
 
     const [timerMode, setTimerMode] = useState<timerModeType>("focus");
 
@@ -47,6 +50,11 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
                 setMessage("Focus Time");
                 setMinutes(focusTimer);
                 setTimerMode("focus");
+                // Play the sound
+                const audio = new Audio(focusTimeSound);
+                audio.play().catch((e) => {
+                    console.log("Playback failed:", e);
+                });
             } else {
                 // Pass the complete session
                 onComplete(focusTimer);
@@ -54,6 +62,11 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
                 setMessage("Break Time");
                 setMinutes(breakTimer);
                 setTimerMode("break");
+                // Play the sound
+                const audio = new Audio(breakTimeSound);
+                audio.play().catch((e) => {
+                    console.log("Playback failed:", e);
+                });
             }
         }
     }, [seconds, minutes]);
