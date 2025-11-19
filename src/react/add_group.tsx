@@ -31,6 +31,8 @@ export default function AddGroup() {
             setFocusTimer(state.focus_timer);
             setBreakTimer(state.break_timer);
             setLoading(false);
+        } else {
+            setLoading(false);
         }
     }, []);
 
