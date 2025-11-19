@@ -106,6 +106,7 @@ export default function Dashboard() {
                                 />
                             </div>
                         ))}
+                        <SessionGroup name="Add new" addNew={true}/>
                     </div>
                 </div>
             </MotionDiv>
