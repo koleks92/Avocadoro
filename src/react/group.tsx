@@ -14,7 +14,7 @@ export default function Group() {
     const { state } = useLocation();
     const navigate = useNavigate();
 
-    const [timerView, setTimerView] = useState<boolean>(false);
+    const [timerView, setTimerView] = useState<boolean>(true);
 
     const [message, setMessage] = useState<string>("");
 
