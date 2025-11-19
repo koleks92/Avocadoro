@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import "../../index.css";
+import { MdAdd } from "react-icons/md";
 
 type SessionGroupProps = {
     name: string;
-    focusTimer: number;
-    breakTimer: number;
-    totalMinutes: number;
+    focusTimer?: number;
+    breakTimer?: number;
+    totalMinutes?: number;
+    addNew?: boolean;
 };
 
 function SessionGroup({
@@ -13,6 +15,7 @@ function SessionGroup({
     focusTimer,
     breakTimer,
     totalMinutes,
+    addNew,
 }: SessionGroupProps) {
     const [time, setTime] = useState<string>("0:00h");
 
@@ -31,25 +34,36 @@ function SessionGroup({
         convertTime();
     }, []);
 
-    return (
-        <div className="session_group_root">
-            <div className="session_group_title">{name}</div>
-            <div className="center_column_div">
-                Total time
-                <div>{time}</div>
-            </div>
-            <div className="session_group_times">
-                <div>
-                    <div>Focus </div>
-                    <div>{focusTimer}min</div>
-                </div>
-                <div>
-                    <div>Break</div>
-                    <div>{breakTimer}min</div>
+    if (addNew) {
+        return (
+            <div className="session_group_root">
+                <div className="session_group_title">{name}</div>
+                <div className="session_group_add">
+                    <MdAdd />
                 </div>
             </div>
-        </div>
-    );
+        );
+    } else {
+        return (
+            <div className="session_group_root">
+                <div className="session_group_title">{name}</div>
+                <div className="center_column_div">
+                    Total time
+                    <div>{time}</div>
+                </div>
+                <div className="session_group_times">
+                    <div>
+                        <div>Focus </div>
+                        <div>{focusTimer}min</div>
+                    </div>
+                    <div>
+                        <div>Break</div>
+                        <div>{breakTimer}min</div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 }
 
 export default SessionGroup;
