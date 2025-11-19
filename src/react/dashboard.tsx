@@ -108,7 +108,9 @@ export default function Dashboard() {
                                 />
                             </div>
                         ))}
-                        <SessionGroup name="Add new" addNew={true} />
+                        <div onClick={() => navigate("/add_group")}>
+                            <SessionGroup name="Add new" addNew={true} />
+                        </div>
                     </div>
                 </div>
             </MotionDiv>
