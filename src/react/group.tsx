@@ -24,7 +24,7 @@ export default function Group() {
     const { session, supabase } = useContext(AvocadoroContext);
 
     useEffect(() => {
-        setAvocadoroAmount(Math.floor(state.total_minutes / 30));
+        setAvocadoroAmount(Math.floor(state.total_minutes / state.focus_timer));
 
         function convertTime(): void {
             const hours = Math.floor(state.total_minutes / 60);
@@ -114,7 +114,7 @@ export default function Group() {
                                         className="avocadoro_print_image"
                                     />{" "}
                                     <span className="group_second_div_top_text">
-                                        = 30m
+                                        = {state.focus_timer}m
                                     </span>
                                 </div>
                                 <div className="group_second_text">
@@ -131,7 +131,7 @@ export default function Group() {
                                         src={logoNoSpace}
                                         className="avocadoro_print_image"
                                     />{" "}
-                                    - 30m
+                                    - {state.focus_timer}m
                                 </div>
                             </div>
                             <AvocadoroPrint amount={avocadoroAmount} />
