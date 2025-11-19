@@ -18,6 +18,7 @@ type SessionGroups = {
 
 export default function Dashboard() {
     const [sessionGroups, setSessionGroups] = useState<SessionGroups[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
 
     const { session, supabase } = useContext(AvocadoroContext);
     const navigate = useNavigate();
@@ -52,6 +53,7 @@ export default function Dashboard() {
                 }));
                 setSessionGroups(groupsWithTotals);
             }
+            setLoading(false);
         };
 
         loadGroups();
@@ -63,7 +65,7 @@ export default function Dashboard() {
         navigate("/");
     }
 
-
+    if (!loading) {
         return (
             <MotionDiv>
                 <div className="dashboard_root">
@@ -106,9 +108,10 @@ export default function Dashboard() {
                                 />
                             </div>
                         ))}
-                        <SessionGroup name="Add new" addNew={true}/>
+                        <SessionGroup name="Add new" addNew={true} />
                     </div>
                 </div>
             </MotionDiv>
         );
+    }
 }
