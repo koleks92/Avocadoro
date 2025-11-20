@@ -19,8 +19,8 @@ type TimerProps = {
 };
 
 function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
-    const [focusTimer, setFocusTimer] = useState<number>(1);
-    const [breakTimer, setBreakTimer] = useState<number>(1);
+    const [focusTimer, setFocusTimer] = useState<number>(focus_timer);
+    const [breakTimer, setBreakTimer] = useState<number>(break_timer);
 
     const [timerMode, setTimerMode] = useState<timerModeType>("focus");
 
