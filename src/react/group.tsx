@@ -18,27 +18,29 @@ export default function Group() {
 
     const [message, setMessage] = useState<string>("");
 
+    const [totalMinutes, setTotalMinutes] = useState<number>(
+        state.total_minutes
+    );
     const [avocadoroAmount, setAvocadoroAmount] = useState<number>(0);
     const [totalTime, setTotalTime] = useState<string>("");
 
     const { session, supabase } = useContext(AvocadoroContext);
 
+    function convertTime(): void {
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = totalMinutes % 60;
+
+        // Pad with leading zeros if needed
+        const paddedHours = String(hours).padStart(2, "0");
+        const paddedMinutes = String(minutes).padStart(2, "0");
+
+        setTotalTime(`${paddedHours}h ${paddedMinutes}m`);
+    }
+
     useEffect(() => {
-        setAvocadoroAmount(Math.floor(state.total_minutes / state.focus_timer));
-
-        function convertTime(): void {
-            const hours = Math.floor(state.total_minutes / 60);
-            const minutes = state.total_minutes % 60;
-
-            // Pad with leading zeros if needed
-            const paddedHours = String(hours).padStart(2, "0");
-            const paddedMinutes = String(minutes).padStart(2, "0");
-
-            setTotalTime(`${paddedHours}h ${paddedMinutes}m`);
-        }
-
+        setAvocadoroAmount(Math.floor(totalMinutes / state.focus_timer));
         convertTime();
-    }, []);
+    }, [totalMinutes]);
 
     useEffect(() => {
         let timeout: ReturnType<typeof setTimeout>;
@@ -70,6 +72,9 @@ export default function Group() {
             })
             .select();
 
+        setAvocadoroAmount((prev) => prev + 1);
+        setTotalMinutes((prev) => prev + state.focus_timer);
+        
         if (error) {
             setMessage(error.message);
         }
