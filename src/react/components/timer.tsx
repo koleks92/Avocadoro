@@ -102,7 +102,10 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
                 {timerMode === "break" ? "Break" : "Focus"}
             </span>
             <span className="timer_time_span">
-                {minutes}:{seconds}
+                {String(minutes).padStart(2, "0")[0]}
+                {String(minutes).padStart(2, "0")[1]}:
+                {String(seconds).padStart(2, "0")[0]}
+                {String(seconds).padStart(2, "0")[1]}
             </span>
             <div className="timer_button_div">
                 <Button
