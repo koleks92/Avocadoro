@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, Tray, Menu, nativeImage } from "electron";
 import path from "node:path";
 import started from "electron-squirrel-startup";
 
@@ -7,9 +7,11 @@ if (started) {
     app.quit();
 }
 
+let mainWindow: BrowserWindow;
+
 const createWindow = () => {
     // Create the browser window.
-    const mainWindow = new BrowserWindow({
+    mainWindow = new BrowserWindow({
         width: 1200,
         height: 800,
 
@@ -20,6 +22,14 @@ const createWindow = () => {
         webPreferences: {
             preload: path.join(__dirname, "preload.js"),
         },
+    });
+
+    mainWindow.on("close", function (event) {
+        // Prevent the window from being destroyed
+        event.preventDefault();
+
+        // Hide the window instead
+        mainWindow.hide();
     });
 
     // and load the index.html of the app.
@@ -62,3 +72,41 @@ app.on("activate", () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
+
+
+// The Tray can only be instantiated after the 'ready' event is fired
+app.whenReady().then(() => {
+    const finalPathString = path.join(
+        app.getAppPath(),
+        "src",
+        "react",
+        "images",
+        "icon.png"
+    );
+
+    const trayIcon = nativeImage.createFromPath(finalPathString);
+
+    const targetSize = 22;
+    let resizedIcon = trayIcon.resize({
+        width: targetSize,
+        height: targetSize,
+    });
+
+    const tray = new Tray(resizedIcon);
+    tray.setToolTip("Avocado App");
+
+    tray.on("click", () => {
+        if (mainWindow) {
+            if (mainWindow.isMinimized()) {
+                // Restore from the minimized state
+                mainWindow.restore();
+            } else {
+                // Show the window if it's completely hidden
+                mainWindow.show();
+            }
+        }
+    });
+
+    // const contextMenu = Menu.buildFromTemplate([{ role: "quit" }]);
+    // tray.setContextMenu(contextMenu);
+});
