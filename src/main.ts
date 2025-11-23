@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Tray, Menu, nativeImage } from "electron";
+import { app, BrowserWindow, Tray, Menu, nativeImage, ipcMain } from "electron";
 import path from "node:path";
 import started from "electron-squirrel-startup";
 
@@ -8,6 +8,17 @@ if (started) {
 }
 
 let mainWindow: BrowserWindow;
+let tray: Tray;
+
+function handleTimer(event: Electron.IpcMainEvent, timer: string) {
+    const webContents = event.sender;
+    const win = BrowserWindow.fromWebContents(webContents);
+    if (timer != "") {
+        tray.setTitle(timer);
+    } else {
+        tray.setTitle("");
+    }
+}
 
 const createWindow = () => {
     // Create the browser window.
@@ -67,6 +78,8 @@ app.on("activate", () => {
 
 // The Tray can only be instantiated after the 'ready' event is fired
 app.whenReady().then(() => {
+    ipcMain.on("setTimer", handleTimer);
+
     const finalPathString = path.join(
         app.getAppPath(),
         "src",
@@ -83,7 +96,7 @@ app.whenReady().then(() => {
         height: targetSize,
     });
 
-    const tray = new Tray(resizedIcon);
+    tray = new Tray(resizedIcon);
     tray.setToolTip("Avocado App");
 
     tray.on("click", () => {
