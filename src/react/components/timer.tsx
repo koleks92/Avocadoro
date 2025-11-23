@@ -9,6 +9,7 @@ import { IoIosRefresh } from "react-icons/io";
 
 import breakTimeSound from "../../../sounds/breakTime.mp3";
 import focusTimeSound from "../../../sounds/focusTime.mp3";
+import { time } from "motion";
 
 type timerModeType = "focus" | "break";
 
@@ -31,7 +32,12 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
 
     const timerRef = useRef<number | null>(null);
 
-    useEffect(() => {});
+    useEffect(() => {
+        if (timerMode === "focus" || timerMode === "break") {
+            const timerString = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+            window.electronAPI.setTimer(timerString);
+        }
+    }, [seconds]);
 
     useEffect(() => {
         if (timerRef.current === null) return;

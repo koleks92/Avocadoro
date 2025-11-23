@@ -44,6 +44,8 @@ export default function Login() {
             }
         );
 
+        window.electronAPI.setTimer("");
+
         return () => listener.subscription.unsubscribe();
     }, []);
 

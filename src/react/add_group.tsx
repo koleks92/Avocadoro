@@ -34,6 +34,8 @@ export default function AddGroup() {
         } else {
             setLoading(false);
         }
+
+        window.electronAPI.setTimer("");
     }, []);
 
     async function addNewGroupHandler(e: React.FormEvent): Promise<void> {

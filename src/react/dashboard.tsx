@@ -24,6 +24,10 @@ export default function Dashboard() {
     const navigate = useNavigate();
 
     useEffect(() => {
+        window.electronAPI.setTimer("");
+    }, []);
+
+    useEffect(() => {
         const loadGroups = async () => {
             // Wait until session is ready
             if (!session || !session.user) return;
