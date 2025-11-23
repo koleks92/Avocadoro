@@ -19,17 +19,11 @@ const createWindow = () => {
         minWidth: 1200,
         minHeight: 800,
 
+        backgroundColor: "#0f0f0f",
+
         webPreferences: {
             preload: path.join(__dirname, "preload.js"),
         },
-    });
-
-    mainWindow.on("close", function (event) {
-        // Prevent the window from being destroyed
-        event.preventDefault();
-
-        // Hide the window instead
-        mainWindow.hide();
     });
 
     // and load the index.html of the app.
@@ -57,9 +51,7 @@ app.on("ready", createWindow);
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on("window-all-closed", () => {
-    if (process.platform !== "darwin") {
-        app.quit();
-    }
+    app.quit();
 });
 
 app.on("activate", () => {
@@ -72,7 +64,6 @@ app.on("activate", () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
-
 
 // The Tray can only be instantiated after the 'ready' event is fired
 app.whenReady().then(() => {
@@ -106,7 +97,4 @@ app.whenReady().then(() => {
             }
         }
     });
-
-    // const contextMenu = Menu.buildFromTemplate([{ role: "quit" }]);
-    // tray.setContextMenu(contextMenu);
 });
