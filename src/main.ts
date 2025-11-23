@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Tray, Menu, nativeImage, ipcMain } from "electron";
+import { app, BrowserWindow, Tray, Menu, nativeImage, ipcMain, TitleOptions } from "electron";
 import path from "node:path";
 import started from "electron-squirrel-startup";
 
@@ -13,8 +13,13 @@ let tray: Tray;
 function handleTimer(event: Electron.IpcMainEvent, timer: string) {
     const webContents = event.sender;
     const win = BrowserWindow.fromWebContents(webContents);
+
+    const options: TitleOptions = {
+        fontType: "monospaced"
+    }
+
     if (timer != "") {
-        tray.setTitle(timer);
+        tray.setTitle(timer, options);
     } else {
         tray.setTitle("");
     }
@@ -34,6 +39,7 @@ const createWindow = () => {
 
         webPreferences: {
             preload: path.join(__dirname, "preload.js"),
+            backgroundThrottling: false,
         },
     });
 

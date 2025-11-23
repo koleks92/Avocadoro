@@ -31,21 +31,24 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
     const [message, setMessage] = useState<string>("");
 
     const timerRef = useRef<number | null>(null);
-
+    
     useEffect(() => {
-        if (timerMode === "focus" || timerMode === "break") {
-            const timerString = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-            window.electronAPI.setTimer(timerString);
-        }
-    }, [seconds]);
-
-    useEffect(() => {
+        // Timer
         if (timerRef.current === null) return;
-
+        
         if (seconds <= 0) {
             setSeconds(59);
             setMinutes((prev) => prev - 1);
         }
+        
+        // Electron context sharing
+        const timerString = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+        if (timerMode === "focus") {
+            window.electronAPI.setTimer("F " + timerString);
+        } else {
+            window.electronAPI.setTimer("B " + timerString);
+        }
+
     }, [seconds]);
 
     useEffect(() => {
