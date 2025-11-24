@@ -98,7 +98,6 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
     };
 
     const reset = (): void => {
-        setMessage("");
         if (timerRef.current !== null) {
             clearInterval(timerRef.current);
         }
@@ -107,6 +106,7 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
         setSeconds(0);
         setTimerOn(false);
         setTimerMode("focus");
+        setMessage("");
     };
     return (
         <div className="timer_root">
@@ -139,6 +139,9 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
                 label={<IoIosRefresh />}
                 onClick={() => {
                     setMessage("Double click for reset");
+                    setTimeout(() => {
+                        setMessage("");
+                    }, 5000);
                 }}
                 onDoubleClick={() => reset()}
             />
