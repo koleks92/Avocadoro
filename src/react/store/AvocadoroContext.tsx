@@ -6,6 +6,8 @@ type AvocadoroContextType = {
     supabase: SupabaseClient;
     session: Session | null;
     setSession: React.Dispatch<React.SetStateAction<Session | null>>;
+    timerOn: boolean;
+    setTimerOn: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 // Create the context (default: null so we can handle initialization)
@@ -27,6 +29,7 @@ const supabase = createClient(
 // The provider itself
 export function AvocadoroProvider({ children }: AvocadoroProviderProps) {
     const [session, setSession] = useState<Session | null>(null);
+    const [timerOn, setTimerOn] = useState<boolean>(false);
 
     useEffect(() => {
         supabase.auth
@@ -41,7 +44,7 @@ export function AvocadoroProvider({ children }: AvocadoroProviderProps) {
     }, []);
 
     return (
-        <AvocadoroContext.Provider value={{ supabase, session, setSession }}>
+        <AvocadoroContext.Provider value={{ supabase, session, setSession, timerOn, setTimerOn }}>
             {children}
         </AvocadoroContext.Provider>
     );
