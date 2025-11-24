@@ -24,6 +24,7 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
     const [breakTimer, setBreakTimer] = useState<number>(break_timer);
 
     const [timerMode, setTimerMode] = useState<timerModeType>("focus");
+    const [timerOn, setTimerOn] = useState<boolean>(false);
 
     const [minutes, setMinutes] = useState<number>(focusTimer);
     const [seconds, setSeconds] = useState<number>(0);
@@ -31,16 +32,8 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
     const [message, setMessage] = useState<string>("");
 
     const timerRef = useRef<number | null>(null);
-    
+
     useEffect(() => {
-        // Timer
-        if (timerRef.current === null) return;
-        
-        if (seconds <= 0) {
-            setSeconds(59);
-            setMinutes((prev) => prev - 1);
-        }
-        
         // Electron context sharing
         const timerString = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
         if (timerMode === "focus") {
@@ -49,6 +42,13 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
             window.electronAPI.setTimer("B " + timerString);
         }
 
+        // Timer
+        if (timerRef.current === null) return;
+
+        if (seconds <= 0) {
+            setSeconds(59);
+            setMinutes((prev) => prev - 1);
+        }
     }, [seconds]);
 
     useEffect(() => {
@@ -56,7 +56,6 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
             setSeconds(0);
             if (timerMode === "break") {
                 // Set focus mode
-                setMessage("Focus Time");
                 setMinutes(focusTimer);
                 setTimerMode("focus");
                 // Play the sound
@@ -68,7 +67,6 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
                 // Pass the complete session
                 onComplete(focusTimer);
                 // Set break mode
-                setMessage("Break Time");
                 setMinutes(breakTimer);
                 setTimerMode("break");
                 // Play the sound
@@ -83,6 +81,7 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
     const start = (): void => {
         setMessage("");
         if (timerRef.current !== null) return; // prevent multiple intervals
+        setTimerOn(true);
         timerRef.current = window.setInterval(() => {
             setSeconds((prev) => prev - 1);
         }, 1000);
@@ -104,6 +103,8 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
         timerRef.current = null;
         setMinutes(focusTimer);
         setSeconds(0);
+        setTimerOn(false);
+        setTimerMode("focus");
     };
     return (
         <div className="timer_root">
