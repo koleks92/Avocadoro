@@ -24,7 +24,8 @@ export default function Group() {
     const [avocadoroAmount, setAvocadoroAmount] = useState<number>(0);
     const [totalTime, setTotalTime] = useState<string>("");
 
-    const { session, supabase } = useContext(AvocadoroContext);
+    const { session, supabase, timerOn, setTimerOn } =
+        useContext(AvocadoroContext);
 
     function convertTime(): void {
         const hours = Math.floor(totalMinutes / 60);
@@ -41,6 +42,10 @@ export default function Group() {
         setAvocadoroAmount(Math.floor(totalMinutes / state.focus_timer));
         convertTime();
     }, [totalMinutes]);
+
+    useEffect(() => {
+        if (!timerOn) setMessage("");
+    }, [timerOn]);
 
     useEffect(() => {
         let timeout: ReturnType<typeof setTimeout>;
@@ -74,9 +79,27 @@ export default function Group() {
 
         setAvocadoroAmount((prev) => prev + 1);
         setTotalMinutes((prev) => prev + state.focus_timer);
-        
+
         if (error) {
             setMessage(error.message);
+        }
+    }
+
+    function editCheck(): void {
+        if (timerOn) {
+            setMessage("Reset the timer first");
+        } else {
+            navigate(`/edit_group/${state.id}`, {
+                state: { ...state, edit: true },
+            });
+        }
+    }
+
+    function goBackCheck(): void {
+        if (timerOn) {
+            setMessage("Reset the timer first");
+        } else {
+            navigate(-1);
         }
     }
 
@@ -86,7 +109,7 @@ export default function Group() {
                 <div className="group_logo_div">
                     <div>
                         <Button
-                            onClick={() => navigate(-1)}
+                            onClick={() => goBackCheck()}
                             type="button"
                             style="custom_button button_logo_dashboard"
                             label={<IoIosArrowBack />}
@@ -96,9 +119,7 @@ export default function Group() {
                     <div>
                         <Button
                             onClick={() => {
-                                navigate(`/edit_group/${state.id}`, {
-                                    state: { ...state, edit: true },
-                                });
+                                editCheck();
                             }}
                             type="button"
                             style="custom_button button_logo_group"
