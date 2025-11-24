@@ -1,6 +1,6 @@
 import "../../index.css";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useContext } from "react";
 import Button from "./button";
 
 import { IoIosPause } from "react-icons/io";
@@ -9,7 +9,8 @@ import { IoIosRefresh } from "react-icons/io";
 
 import breakTimeSound from "../../../sounds/breakTime.mp3";
 import focusTimeSound from "../../../sounds/focusTime.mp3";
-import { time } from "motion";
+
+import { AvocadoroContext } from "../store/AvocadoroContext";
 
 type timerModeType = "focus" | "break";
 
@@ -24,7 +25,6 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
     const [breakTimer, setBreakTimer] = useState<number>(break_timer);
 
     const [timerMode, setTimerMode] = useState<timerModeType>("focus");
-    const [timerOn, setTimerOn] = useState<boolean>(false);
 
     const [minutes, setMinutes] = useState<number>(focusTimer);
     const [seconds, setSeconds] = useState<number>(0);
@@ -32,6 +32,8 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
     const [message, setMessage] = useState<string>("");
 
     const timerRef = useRef<number | null>(null);
+
+    const { setTimerOn } = useContext(AvocadoroContext);
 
     useEffect(() => {
         // Electron context sharing
