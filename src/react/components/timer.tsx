@@ -11,6 +11,7 @@ import breakTimeSound from "./../sounds/breakTime.mp3";
 import focusTimeSound from "./../sounds/focusTime.mp3";
 
 import { AvocadoroContext } from "../store/AvocadoroContext";
+import QuotePrinter from "./quotePrinter";
 
 type timerModeType = "focus" | "break";
 
@@ -127,6 +128,7 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
         setTimerMode("focus");
         setMessage("");
     };
+
     return (
         <div className="timer_root">
             <span className="timer_title_span">
@@ -138,6 +140,7 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
                 {String(seconds).padStart(2, "0")[0]}
                 {String(seconds).padStart(2, "0")[1]}
             </span>
+            <QuotePrinter />
             <div className="timer_button_div">
                 <Button
                     type="button"
