@@ -34,9 +34,8 @@ function handleTimer(event: Electron.IpcMainEvent, timer: string) {
 }
 
 function handelTimerOn(event: Electron.IpcMainEvent, timerOn: boolean) {
-    // Optional: Provide feedback if the user tries to close the app while the timer is running
     if (mainWindow && timerOn) {
-        mainWindow.setClosable(false); // Make the window temporarily non-closable by OS/UI
+        mainWindow.setClosable(false); 
     } else if (mainWindow) {
         mainWindow.setClosable(true);
     }
