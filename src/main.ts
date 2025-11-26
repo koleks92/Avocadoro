@@ -1,4 +1,12 @@
-import { app, BrowserWindow, Tray, Menu, nativeImage, ipcMain, TitleOptions } from "electron";
+import {
+    app,
+    BrowserWindow,
+    Tray,
+    Menu,
+    nativeImage,
+    ipcMain,
+    TitleOptions,
+} from "electron";
 import path from "node:path";
 import started from "electron-squirrel-startup";
 
@@ -15,13 +23,22 @@ function handleTimer(event: Electron.IpcMainEvent, timer: string) {
     const win = BrowserWindow.fromWebContents(webContents);
 
     const options: TitleOptions = {
-        fontType: "monospaced"
-    }
+        fontType: "monospaced",
+    };
 
     if (timer != "") {
         tray.setTitle(timer, options);
     } else {
         tray.setTitle("");
+    }
+}
+
+function handelTimerOn(event: Electron.IpcMainEvent, timerOn: boolean) {
+    // Optional: Provide feedback if the user tries to close the app while the timer is running
+    if (mainWindow && timerOn) {
+        mainWindow.setClosable(false); // Make the window temporarily non-closable by OS/UI
+    } else if (mainWindow) {
+        mainWindow.setClosable(true);
     }
 }
 
@@ -85,6 +102,7 @@ app.on("activate", () => {
 // The Tray can only be instantiated after the 'ready' event is fired
 app.whenReady().then(() => {
     ipcMain.on("setTimer", handleTimer);
+    ipcMain.on("setTimerOn", handelTimerOn);
 
     const finalPathString = path.join(
         app.getAppPath(),
