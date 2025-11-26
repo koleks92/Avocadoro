@@ -125,7 +125,9 @@ body {
 /* Timer */
 .timer_root {
     display: flex;
+    flex: 1;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     padding: 1rem;
 }
@@ -156,6 +158,32 @@ body {
 .timer_button_restart {
     font-size: 2rem;
     margin: 1rem;
+}
+
+/* Quote Printer */
+
+.quote_printer_root {
+    display: flex;
+    width: 80%;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.quote_printer_quote {
+    display: flex;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.quote_printer_author {
+    display: flex;
+    justify-content: end;
+    width: 100%;
+    text-align: right;
+    font-size: 0.9rem;
+    font-style: italic;
 }
 
 /* Avocadoro Print */
