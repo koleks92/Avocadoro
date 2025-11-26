@@ -7,8 +7,8 @@ import { IoIosPause } from "react-icons/io";
 import { IoIosPlay } from "react-icons/io";
 import { IoIosRefresh } from "react-icons/io";
 
-import breakTimeSound from "../../../sounds/breakTime.mp3";
-import focusTimeSound from "../../../sounds/focusTime.mp3";
+import breakTimeSound from "./../sounds/breakTime.mp3";
+import focusTimeSound from "./../sounds/focusTime.mp3";
 
 import { AvocadoroContext } from "../store/AvocadoroContext";
 
