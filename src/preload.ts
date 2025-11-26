@@ -9,5 +9,6 @@ declare global {
 }
 
 contextBridge.exposeInMainWorld('electronAPI', {
-  setTimer: (timer: string) => ipcRenderer.send('setTimer', timer)
+  setTimer: (timer: string) => ipcRenderer.send('setTimer', timer),
+  setTimerOn: (timerOn: boolean) => ipcRenderer.send('setTimerOn', timerOn)
 })
