@@ -33,7 +33,26 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
 
     const timerRef = useRef<number | null>(null);
 
-    const { setTimerOn } = useContext(AvocadoroContext);
+    const { timerOn, setTimerOn } = useContext(AvocadoroContext);
+
+    // Define the handler function once outside or inside the component scope
+    const blockMouseBackForward = (e: MouseEvent) => {
+        if (e.button === 3 || e.button === 4) {
+            e.preventDefault();
+        }
+    };
+
+    useEffect(() => {
+        window.electronAPI.setTimerOn(timerOn);
+
+        if (timerOn) {
+            window.addEventListener("mouseup", blockMouseBackForward);
+        }
+
+        return () => {
+            window.removeEventListener("mouseup", blockMouseBackForward);
+        };
+    }, [timerOn]);
 
     useEffect(() => {
         // Electron context sharing
