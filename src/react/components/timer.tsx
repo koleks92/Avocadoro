@@ -167,7 +167,7 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
                 }}
                 onDoubleClick={() => reset()}
             />
-            <span>{message}</span>
+            <span className="message_span">{message}</span>
         </div>
     );
 }

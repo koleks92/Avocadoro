@@ -192,7 +192,7 @@ export default function Group() {
                                 focus_timer={state.focus_timer}
                                 break_timer={state.break_timer}
                             />
-                            {message}
+                            <span className="message_span">{message}</span>
                         </div>
                     </div>
                 </div>
