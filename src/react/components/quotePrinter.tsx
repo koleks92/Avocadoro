@@ -63,6 +63,10 @@ function QuotePrinter() {
                 <span className="quote_printer_author">{currentQuote.author}</span>
             </div>
         );
+    } else {
+        return (
+            <div className="quote_printer_root"></div>
+        )
     }
 }
 
