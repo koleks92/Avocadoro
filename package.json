@@ -1,8 +1,8 @@
 {
-    "name": "my-app",
-    "productName": "my-app",
+    "name": "avocadoro",
+    "productName": "avocadoro",
     "version": "1.0.0",
-    "description": "My Electron application description",
+    "description": "Pomodoro style application, but with more advanced features",
     "main": ".vite/build/main.js",
     "scripts": {
         "start": "electron-forge start",
