@@ -15,6 +15,18 @@ if (started) {
     app.quit();
 }
 
+const PROTOCOL = "avocadoro"; // Choose a unique, memorable scheme, e.g., 'supabase-electron-app'
+
+if (process.defaultApp) {
+    if (process.argv.length >= 2) {
+        app.setAsDefaultProtocolClient(PROTOCOL, process.execPath, [
+            path.resolve(process.argv[1]),
+        ]);
+    }
+} else {
+    app.setAsDefaultProtocolClient(PROTOCOL);
+}
+
 let mainWindow: BrowserWindow;
 let tray: Tray;
 
@@ -35,7 +47,7 @@ function handleTimer(event: Electron.IpcMainEvent, timer: string) {
 
 function handelTimerOn(event: Electron.IpcMainEvent, timerOn: boolean) {
     if (mainWindow && timerOn) {
-        mainWindow.setClosable(false); 
+        mainWindow.setClosable(false);
     } else if (mainWindow) {
         mainWindow.setClosable(true);
     }
@@ -46,20 +58,20 @@ const createWindow = () => {
     mainWindow = new BrowserWindow({
         width: 1200,
         height: 800,
-
-        // minimum window size
         minWidth: 1200,
         minHeight: 800,
-
         backgroundColor: "#0f0f0f",
 
         webPreferences: {
             preload: path.join(__dirname, "preload.js"),
             backgroundThrottling: false,
+            // Ensure contextIsolation is true and nodeIntegration is false for security
+            contextIsolation: true,
+            nodeIntegration: false,
         },
     });
 
-    // and load the index.html of the app.
+    // ... (Window loading logic)
     if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
         mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
     } else {
@@ -75,62 +87,92 @@ const createWindow = () => {
     mainWindow.webContents.openDevTools();
 };
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on("ready", createWindow);
+// --- App Lifecycle and Deep Link Handling ---
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
-app.on("window-all-closed", () => {
+// The `requestSingleInstanceLock` is crucial for deep linking on Windows/Linux
+const gotTheLock = app.requestSingleInstanceLock();
+
+if (!gotTheLock) {
     app.quit();
-});
+} else {
+    // Handle new instance launch (Windows/Linux)
+    app.on("second-instance", (event, argv, workingDirectory) => {
+        // Find the URL argument
+        const url = argv.find((arg) => arg.startsWith(`${PROTOCOL}://`));
 
-app.on("activate", () => {
-    // On OS X it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) {
-        createWindow();
-    }
-});
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.
-
-// The Tray can only be instantiated after the 'ready' event is fired
-app.whenReady().then(() => {
-    ipcMain.on("setTimer", handleTimer);
-    ipcMain.on("setTimerOn", handelTimerOn);
-
-    const finalPathString = path.join(
-        app.getAppPath(),
-        "src",
-        "react",
-        "images",
-        "icon.png"
-    );
-
-    const trayIcon = nativeImage.createFromPath(finalPathString);
-
-    const targetSize = 22;
-    let resizedIcon = trayIcon.resize({
-        width: targetSize,
-        height: targetSize,
-    });
-
-    tray = new Tray(resizedIcon);
-    tray.setToolTip("Avocado App");
-
-    tray.on("click", () => {
         if (mainWindow) {
-            if (mainWindow.isMinimized()) {
-                // Restore from the minimized state
-                mainWindow.restore();
-            } else {
-                // Show the window if it's completely hidden
-                mainWindow.show();
+            // Focus the main window
+            if (mainWindow.isMinimized()) mainWindow.restore();
+            mainWindow.focus();
+
+            if (url) {
+                console.log(`Deep link received (second-instance): ${url}`);
+                // 💡 FIX 1: Send the URL to the renderer process
+                mainWindow.webContents.send("deep-link-url", url);
             }
         }
     });
+
+    app.on("ready", createWindow);
+
+    app.on("activate", () => {
+        if (BrowserWindow.getAllWindows().length === 0) {
+            createWindow();
+        }
+    });
+
+    // Handle protocol activation (macOS)
+    app.on("open-url", (event, url) => {
+        event.preventDefault();
+
+        if (mainWindow) {
+            console.log(`Deep link received (open-url): ${url}`);
+            // 💡 FIX 2: Send the URL to the renderer process
+            mainWindow.webContents.send("deep-link-url", url);
+            // Ensure window is shown/focused
+            if (mainWindow.isMinimized()) mainWindow.restore();
+            mainWindow.focus();
+        }
+    });
+
+    // The Tray can only be instantiated after the 'ready' event is fired
+    app.whenReady().then(() => {
+        ipcMain.on("setTimer", handleTimer);
+        ipcMain.on("setTimerOn", handelTimerOn);
+
+        // --- Tray Icon Setup ---
+        const finalPathString = path.join(
+            app.getAppPath(),
+            "src",
+            "react",
+            "images",
+            "icon.png"
+        );
+
+        const trayIcon = nativeImage.createFromPath(finalPathString);
+
+        const targetSize = 22;
+        let resizedIcon = trayIcon.resize({
+            width: targetSize,
+            height: targetSize,
+        });
+
+        tray = new Tray(resizedIcon);
+        tray.setToolTip("Avocado App");
+
+        tray.on("click", () => {
+            if (mainWindow) {
+                if (mainWindow.isMinimized()) {
+                    mainWindow.restore();
+                } else {
+                    mainWindow.show();
+                }
+            }
+        });
+    });
+}
+
+// Quit when all windows are closed, except on macOS.
+app.on("window-all-closed", () => {
+    app.quit();
 });
