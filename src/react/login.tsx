@@ -33,28 +33,85 @@ export default function Login() {
     const [authLoaded, setAuthLoaded] = useState(false);
 
     useEffect(() => {
+        // --- 1. Initial Session Load ---
         supabase.auth.getSession().then(({ data }) => {
             setSession(data.session);
-            setAuthLoaded(true); // we know the initial session is resolved
+            setAuthLoaded(true); // Initial state resolved
         });
 
+        // --- 2. Supabase Real-time Listener ---
         const { data: listener } = supabase.auth.onAuthStateChange(
             (_event, session) => {
+                // This is the single source of truth for session updates
                 setSession(session);
             }
         );
 
-        window.electronAPI.setTimer("");
+        // Array to hold all cleanup functions
+        const cleanupFns: (() => void)[] = [
+            () => listener.subscription.unsubscribe(),
+        ];
 
-        return () => listener.subscription.unsubscribe();
-    }, []);
+        if (window.electronAPI && window.electronAPI.onDeepLinkUrl) {
+            const cleanupDeepLink = window.electronAPI.onDeepLinkUrl(
+                (url: string) => {
+                    try {
+                        const urlObject = new URL(url);
+                        const hashParams = new URLSearchParams(
+                            urlObject.hash.substring(1)
+                        ); // substring(1) to remove '#'
+
+                        const access_token = hashParams.get("access_token");
+                        const refresh_token = hashParams.get("refresh_token");
+
+                        if (access_token && refresh_token) {
+                            supabase.auth
+                                .setSession({
+                                    access_token: access_token,
+                                    refresh_token: refresh_token,
+                                })
+                                .then(({ data }) => {
+                                    if (data.session) {
+                                        setSession(data.session);
+                                        setAuthLoaded(true);
+
+                                        // Clean the path
+                                        if (
+                                            window.history &&
+                                            window.history.replaceState
+                                        ) {
+                                            window.history.replaceState(
+                                                null,
+                                                "",
+                                                "/#/"
+                                            );
+                                        }
+                                    }
+                                });
+                        } else {
+                            console.error("Tokens not found in URL hash.");
+                        }
+                    } catch (error) {
+                        console.error("Error processing deep link URL:", error);
+                    }
+                }
+            );
+
+            cleanupFns.push(cleanupDeepLink); // Add deep link cleanup
+            window.electronAPI.setTimer(""); // Your existing IPC call
+        }
+
+        // 💡 FIX 2: Return a function that runs ALL c
+        // leanup functions (unified cleanup).
+        return () => cleanupFns.forEach((fn) => fn());
+    }, []); // Dependency array is correct
 
     useEffect(() => {
         if (!authLoaded) return; // prevent early redirect flicker
         if (session) {
             navigate("/dashboard");
         }
-    }, [session, authLoaded]);
+    }, [session, authLoaded, navigate]);
 
     async function signInHandler(e: React.FormEvent): Promise<void> {
         e.preventDefault();
@@ -132,6 +189,9 @@ export default function Login() {
     async function handleSignInWithGoogle(): Promise<void> {
         const { error } = await supabase.auth.signInWithOAuth({
             provider: "google",
+            options: {
+                redirectTo: "avocadoro://auth/callback",
+            },
         });
 
         if (error) {
