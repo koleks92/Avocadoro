@@ -1,6 +1,5 @@
 ## Main TODO:
-- Icon in the tray fix ( probably path )
-- Icons in general
+- When to many avocados lossing preforamce, what about flat list like in RN
 
 ## Extra TODO:
 - Custom timer ( without login + just custom timer )
