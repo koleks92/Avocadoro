@@ -9,13 +9,14 @@ import {
 } from "electron";
 import path from "node:path";
 import started from "electron-squirrel-startup";
+import { promiseHooks } from "node:v8";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
     app.quit();
 }
 
-const PROTOCOL = "avocadoro"; // Choose a unique, memorable scheme, e.g., 'supabase-electron-app'
+const PROTOCOL = "avocadoro";
 
 if (process.defaultApp) {
     if (process.argv.length >= 2) {
@@ -107,7 +108,6 @@ if (!gotTheLock) {
 
             if (url) {
                 console.log(`Deep link received (second-instance): ${url}`);
-                // 💡 FIX 1: Send the URL to the renderer process
                 mainWindow.webContents.send("deep-link-url", url);
             }
         }
@@ -127,7 +127,6 @@ if (!gotTheLock) {
 
         if (mainWindow) {
             console.log(`Deep link received (open-url): ${url}`);
-            // 💡 FIX 2: Send the URL to the renderer process
             mainWindow.webContents.send("deep-link-url", url);
             // Ensure window is shown/focused
             if (mainWindow.isMinimized()) mainWindow.restore();
@@ -142,12 +141,12 @@ if (!gotTheLock) {
 
         // --- Tray Icon Setup ---
         const finalPathString = path.join(
-            app.getAppPath(),
-            "src",
-            "react",
-            "images",
-            "icon.png"
+            app.isPackaged ? process.resourcesPath : app.getAppPath(),
+            "assets",
+            "tray_icon.png"
         );
+
+        console.log(finalPathString);
 
         const trayIcon = nativeImage.createFromPath(finalPathString);
 
@@ -172,7 +171,7 @@ if (!gotTheLock) {
     });
 }
 
-// Quit when all windows are closed, except on macOS.
+// Quit when all windows are closed
 app.on("window-all-closed", () => {
     app.quit();
 });
