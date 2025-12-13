@@ -107,7 +107,6 @@ if (!gotTheLock) {
             mainWindow.focus();
 
             if (url) {
-                console.log(`Deep link received (second-instance): ${url}`);
                 mainWindow.webContents.send("deep-link-url", url);
             }
         }

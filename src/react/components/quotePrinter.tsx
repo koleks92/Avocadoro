@@ -51,8 +51,6 @@ function QuotePrinter() {
 
         const randomIndex = Math.floor(Math.random() * quotes.length);
 
-        console.log(quotes[randomIndex]);
-
         setCurrentQuote(quotes[randomIndex]);
     }
 
