@@ -1,5 +1,5 @@
 ## Main TODO:
-- When to many avocados lossing preforamce, what about flat list like in RN
+- Test
 
 ## Extra TODO:
 - Custom timer ( without login + just custom timer )
