@@ -1,1 +1,1 @@
-import './react/app';
+import './index';

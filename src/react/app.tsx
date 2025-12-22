@@ -1,9 +1,8 @@
-import { BrowserRouter, HashRouter } from "react-router-dom";
-import { createRoot } from "react-dom/client";
+import { HashRouter } from "react-router-dom";
 import { AvocadoroProvider } from "./store/AvocadoroContext";
 import AnimatedRoutes from "./components/animatedRoutes";
 
-export default function App() {
+export default function App() { // Use default export here for cleaner imports
     return (
         <HashRouter>
             <AvocadoroProvider>
@@ -12,7 +11,3 @@ export default function App() {
         </HashRouter>
     );
 }
-
-const container = document.getElementById("root")!;
-const root = createRoot(container);
-root.render(<App />);
