@@ -98,6 +98,7 @@ export default function Dashboard() {
                         {sessionGroups.map((group: SessionGroups) => (
                             <div
                                 key={group.id}
+                                className="dashboard_session_group_div_single"
                                 onClick={() =>
                                     navigate(`/group/${group.id}`, {
                                         state: group,
@@ -112,7 +113,10 @@ export default function Dashboard() {
                                 />
                             </div>
                         ))}
-                        <div onClick={() => navigate("/add_group")}>
+                        <div
+                            className="dashboard_session_group_div_single"
+                            onClick={() => navigate("/add_group")}
+                        >
                             <SessionGroup name="Add new" addNew={true} />
                         </div>
                     </div>

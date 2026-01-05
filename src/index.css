@@ -321,7 +321,8 @@ body {
 
 /* Dashboard, Group */
 .dashboard_root,
-.group_root {
+.group_root,
+.settings_root {
     box-sizing: border-box;
     height: calc(100vh - 4rem);
     width: calc(100vw - 4rem);
@@ -359,6 +360,10 @@ body {
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch; /* smoother friction */
     position: relative;
+}
+
+.dashboard_session_group_div_single {
+    height: fit-content;
 }
 
 .dashboard_bottom_div {
