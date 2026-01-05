@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { AvocadoroContext } from "./store/AvocadoroContext";
 import Loading from "./components/loading";
 import Button from "./components/button";
-import { MdLogout, MdAdd } from "react-icons/md";
+import { MdLogout, MdAdd, MdOutlineSettings } from "react-icons/md";
 import SessionGroup from "./components/sessionGroup";
 import MotionDiv from "./components/motionDiv";
 
@@ -115,6 +115,14 @@ export default function Dashboard() {
                         <div onClick={() => navigate("/add_group")}>
                             <SessionGroup name="Add new" addNew={true} />
                         </div>
+                    </div>
+                    <div className="dashboard_bottom_div">
+                        <Button
+                            onClick={() => navigate("/settings")}
+                            type="button"
+                            style="custom_button button_logo_dashboard"
+                            label={<MdOutlineSettings />}
+                        />
                     </div>
                 </div>
             </MotionDiv>
