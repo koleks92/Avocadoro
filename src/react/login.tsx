@@ -220,6 +220,7 @@ export default function Login() {
 
     function clearMessages(): void {
         setMessage("");
+        setSignUpMessage("");
         setPasswordInvalid(false);
         setEmailInvalid(false);
         setConfirmPasswordInvalid(false);
@@ -342,12 +343,11 @@ export default function Login() {
                                             Typed passwords are not the same
                                         </span>
                                     ) : (
-                                        <span className="disabled_span">
-                                            Typed passwords are not the same
+                                        <span className="signup_message warning_span">
+                                            {signUpMessage}
                                         </span>
                                     )}
                                 </div>
-                                {signUpMessage}
                                 <div className="center_column_div">
                                     <Button
                                         label="Sign Up"
