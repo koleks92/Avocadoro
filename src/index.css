@@ -36,6 +36,7 @@ body {
 
 .warning_span {
     font-size: 0.9rem;
+    min-height: 1.3rem;
     margin: 0.2rem;
     color: red;
     text-align: center;
