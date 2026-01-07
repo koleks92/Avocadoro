@@ -78,7 +78,7 @@ export default function Dashboard() {
                             <Button
                                 onClick={signOut}
                                 type="button"
-                                style="custom_button button_logo_dashboard"
+                                style="custom_button button_logo_dashboard back_button"
                                 label={<MdLogout />}
                             />
                         </div>
@@ -89,7 +89,7 @@ export default function Dashboard() {
                             <Button
                                 onClick={() => navigate("/add_group")}
                                 type="button"
-                                style="custom_button button_logo_dashboard"
+                                style="custom_button button_logo_dashboard add_button"
                                 label={<MdAdd />}
                             />
                         </div>
