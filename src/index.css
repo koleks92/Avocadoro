@@ -529,8 +529,26 @@ body {
 /* Settings */
 
 .settings_main_div {
+    display: flex;
     padding: 2rem;
     margin: 1rem;
+    width: 75%;
+    justify-content: center;
+}
+
+.settings_confirm_div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.settings_title_span {
+    display: block; /* Spans need to be block or inline-block to align */
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
 }
 
 @keyframes shake {
