@@ -157,3 +157,33 @@ describe("Authentication Flow", () => {
         });
     });
 });
+
+describe("Dashboard Flow", () => {
+    const emailInput = () => $('input[placeholder="Type email"]');
+    const passwordInput = () => $('input[placeholder="Type password"]');
+    const loginButton = () => $("button=Log in");
+
+    const dashboardTitle = () => $(".dashboard_title_span");
+    const logoutButton = () => $(".button_logo_dashboard");
+    const settingsButton = () => $(".dashboard_bottom_div .custom_button");
+    const addButton = () =>
+        $(".add_button");
+
+    const addNewSessionSpan = () => $(".add_group_title_span");
+
+    describe("Dashboard View", async () => {
+        it("Should show dashboard with all buttons", async () => {
+            await (browser as any).refresh();
+            await expect(loginButton()).toBeDisplayed();
+            await emailInput().setValue("test@mail.com");
+            await passwordInput().setValue("Password123456");
+            await loginButton().click();
+            await expect(dashboardTitle()).toBeDisplayed();
+            await expect(logoutButton()).toBeDisplayed();
+            await expect(settingsButton()).toBeDisplayed();
+            await expect(addButton()).toBeDisplayed();
+            await addButton().click();
+            await expect(addNewSessionSpan()).toBeDisplayed();
+        });
+    });
+});
