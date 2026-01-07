@@ -237,7 +237,8 @@ body {
 .login_logo_div,
 .dashboard_logo_div,
 .add_group_div,
-.group_logo_div {
+.group_logo_div,
+.settings_logo_div {
     display: flex;
     width: 100%;
     flex-direction: row;
@@ -523,6 +524,13 @@ body {
 
 .delete_span_text {
     margin-top: 2rem;
+}
+
+/* Settings */
+
+.settings_main_div {
+    padding: 2rem;
+    margin: 1rem;
 }
 
 @keyframes shake {
