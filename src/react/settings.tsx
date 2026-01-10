@@ -33,7 +33,7 @@ export default function Settings() {
                         <Button
                             onClick={() => navigate(-1)}
                             type="button"
-                            style="custom_button button_logo_dashboard"
+                            style="custom_button button_logo_dashboard go_back_button"
                             label={<IoIosArrowBack />}
                         />
                     </div>
