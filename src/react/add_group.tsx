@@ -176,7 +176,7 @@ export default function AddGroup() {
                                     <Button
                                         label={<IoIosArrowBack />}
                                         type="button"
-                                        style="custom_button button_logo"
+                                        style="custom_button button_logo go_back_button"
                                         onClick={() => {
                                             navigate(-1);
                                         }}
