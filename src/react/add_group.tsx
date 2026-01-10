@@ -238,7 +238,7 @@ export default function AddGroup() {
                                             </span>
                                         )}
                                     </div>
-                                    <div className="center_column_div">
+                                    <div className="center_column_div focus_timer">
                                         <label
                                             htmlFor="focusTimer"
                                             className="add_group_label"
@@ -255,7 +255,7 @@ export default function AddGroup() {
                                             }
                                         />
                                     </div>
-                                    <div className="center_column_div">
+                                    <div className="center_column_div break_timer">
                                         <label
                                             htmlFor="breakTimer"
                                             className="add_group_label"
