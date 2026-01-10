@@ -166,10 +166,11 @@ describe("Dashboard Flow", () => {
     const dashboardTitle = () => $(".dashboard_title_span");
     const logoutButton = () => $(".button_logo_dashboard");
     const settingsButton = () => $(".dashboard_bottom_div .custom_button");
-    const addButton = () =>
-        $(".add_button");
+    const addButton = () => $(".add_button");
+    const goBackButton = () => $(".go_back_button");
 
     const addNewSessionSpan = () => $(".add_group_title_span");
+    const settingsTitleSpan = () => $("span=Settings");
 
     describe("Dashboard View", async () => {
         it("Should show dashboard with all buttons", async () => {
@@ -182,8 +183,29 @@ describe("Dashboard Flow", () => {
             await expect(logoutButton()).toBeDisplayed();
             await expect(settingsButton()).toBeDisplayed();
             await expect(addButton()).toBeDisplayed();
+        });
+    });
+
+    describe("Dashboard buttons", async () => {
+        it("Should show add new button and open add new session view", async () => {
+            await (browser as any).refresh();
+            await expect(dashboardTitle()).toBeDisplayed();
+            await expect(addButton()).toBeDisplayed();
             await addButton().click();
             await expect(addNewSessionSpan()).toBeDisplayed();
+            await expect(goBackButton()).toBeDisplayed();
+            await goBackButton().click();
+            await expect(dashboardTitle()).toBeDisplayed();
+        });
+        it("Should show settings button and open settings view", async () => {
+            await (browser as any).refresh();
+            await expect(dashboardTitle()).toBeDisplayed();
+            await expect(settingsButton()).toBeDisplayed();
+            await settingsButton().click();
+            await expect(settingsTitleSpan()).toBeDisplayed();
+            await expect(goBackButton()).toBeDisplayed();
+            await goBackButton().click();
+            await expect(dashboardTitle()).toBeDisplayed();
         });
     });
 });
