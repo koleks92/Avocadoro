@@ -151,7 +151,7 @@ export default function AddGroup() {
                                     Are you sure ?
                                 </span>
 
-                                <div>
+                                <div className="delete_button_confirm_div">
                                     <Button
                                         label={<MdDeleteOutline />}
                                         type="button"
