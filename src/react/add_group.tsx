@@ -192,7 +192,7 @@ export default function AddGroup() {
                                         <Button
                                             label={<MdDeleteOutline />}
                                             type="button"
-                                            style="custom_button button_logo"
+                                            style="custom_button button_logo delete_button"
                                             onClick={() => {
                                                 setDeleteView(true);
                                             }}

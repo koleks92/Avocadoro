@@ -122,7 +122,7 @@ export default function Group() {
                                 editCheck();
                             }}
                             type="button"
-                            style="custom_button button_logo_group"
+                            style="custom_button button_logo_group edit_button"
                             label={<IoPencil />}
                         />
                     </div>
