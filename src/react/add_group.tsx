@@ -137,11 +137,11 @@ export default function AddGroup() {
                     {deleteView ? (
                         <>
                             <div className="login_logo_div">
-                                <div>
+                                <div className="delete_button_confirm_div">
                                     <Button
                                         label={<IoIosArrowBack />}
                                         type="button"
-                                        style="custom_button button_logo"
+                                        style="custom_button button_logo go_back_button"
                                         onClick={() => {
                                             setDeleteView(false);
                                         }}
@@ -172,7 +172,7 @@ export default function AddGroup() {
                     ) : (
                         <>
                             <div className="login_logo_div">
-                                <div>
+                                <div className="add_group_back_button_div">
                                     <Button
                                         label={<IoIosArrowBack />}
                                         type="button"
@@ -213,7 +213,7 @@ export default function AddGroup() {
                             </div>
                             <div className="add_group_main">
                                 <form onSubmit={addNewGroupHandler}>
-                                    <div className="center_column_div">
+                                    <div className="center_column_div name_input">
                                         <label
                                             htmlFor="name"
                                             className="add_group_label"

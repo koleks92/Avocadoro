@@ -107,11 +107,11 @@ export default function Group() {
         <MotionDiv>
             <div className="group_root">
                 <div className="group_logo_div">
-                    <div>
+                    <div className="group_back_button_div">
                         <Button
                             onClick={() => goBackCheck()}
                             type="button"
-                            style="custom_button button_logo_dashboard"
+                            style="custom_button button_logo_dashboard go_back_button"
                             label={<IoIosArrowBack />}
                         />
                     </div>
