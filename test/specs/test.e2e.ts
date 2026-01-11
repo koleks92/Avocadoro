@@ -214,18 +214,36 @@ describe("Session group flow", () => {
     const dashboardTitle = () => $(".dashboard_title_span");
     const addButton = () => $(".add_button");
     const addSessionButton = () => $("button=Add");
-    const goBackButton = () => $(".go_back_button");
+    const deleteBackButton = () =>
+        $(".delete_button_confirm_div .go_back_button");
+    const addGroupBackButton = () =>
+        $(".add_group_back_button_div .go_back_button");
+    const groupBackButton = () => $(".group_back_button_div .go_back_button");
+    const editButton = () => $(".edit_button");
+    const deleteButton = () => $(".delete_button");
+    const deleteButtonConfirm = () =>
+        $(".delete_button_confirm_div .delete_button_confirm");
+    const updateButton = () => $("button=Update");
 
     const addNewSessionSpan = () => $(".add_group_title_span");
     const testGroupSpan = () => $(".session_group_title=TestGroup");
+    const testGroupSpan2 = () => $(".session_group_title=TestGroup2");
+    const testGroupSpan3 = () => $(".session_group_title=TestGroup3");
+    const tenMinSpan = () => $("div=10min");
+    const twentyMinSpan = () => $("div=20min");
+
+    const deleteSpan = () => $(".delete_span_text");
+
     const missingNameSpan = () => $("span=Missing avocadoro name");
     const existingNameSpan = () =>
         $("span=You already have a group with that name.");
 
-    const nameInput = () => $('input[placeholder="Avocadoro name"]');
+    const nameInput = () => $(".name_input input");
 
     const focusFive = () => $(".focus_timer").$("button=5");
     const breakTen = () => $(".break_timer").$("button=10");
+    const focusTen = () => $(".focus_timer").$("button=10");
+    const breakTwenty = () => $(".break_timer").$("button=20");
 
     describe("Adding new session group", async () => {
         it("Should add new session group and show it on dashboard", async () => {
@@ -276,14 +294,14 @@ describe("Session group flow", () => {
             await expect(addSessionButton()).toBeDisplayed();
             await addSessionButton().click();
             await expect(missingNameSpan()).toBeDisplayed();
-            await goBackButton().click();
+            await addGroupBackButton().click();
         });
 
         it("Should shouw a warning if that name already exists", async () => {
             await (browser as any).refresh();
             await expect(dashboardTitle()).toBeDisplayed();
             await expect(addButton()).toBeDisplayed();
-            await addButton().click(); 
+            await addButton().click();
             await expect(addNewSessionSpan()).toBeDisplayed();
             await expect(nameInput()).toBeDisplayed();
             await nameInput().setValue("TestGroup");
@@ -292,6 +310,75 @@ describe("Session group flow", () => {
             await expect(addSessionButton()).toBeDisplayed();
             await addSessionButton().click();
             await expect(existingNameSpan()).toBeDisplayed();
+            await addGroupBackButton().click();
+        });
+    });
+
+    describe("Editing and removing group sessions", () => {
+        it("Should remove group session", async () => {
+            await (browser as any).refresh();
+            await expect(dashboardTitle()).toBeDisplayed();
+            await expect(testGroupSpan()).toBeDisplayed();
+            await expect(testGroupSpan2()).toBeDisplayed();
+            await testGroupSpan().click();
+            await expect(editButton()).toBeDisplayed();
+            await editButton().click();
+            await expect(deleteButton()).toBeDisplayed();
+            await deleteButton().click();
+            await expect(deleteSpan()).toBeDisplayed();
+            await deleteButtonConfirm().click();
+            await expect(dashboardTitle()).toBeDisplayed();
+            await expect(testGroupSpan()).not.toBeDisplayed();
+            await expect(testGroupSpan2()).toBeDisplayed();
+        });
+
+        it("Should show remove warning message, without removing group session", async () => {
+            await (browser as any).refresh();
+            await expect(dashboardTitle()).toBeDisplayed();
+            await expect(testGroupSpan2()).toBeDisplayed();
+            await testGroupSpan2().click();
+            await expect(editButton()).toBeDisplayed();
+            await editButton().click();
+            await expect(deleteButton()).toBeDisplayed();
+            await deleteButton().click();
+            await expect(deleteSpan()).toBeDisplayed();
+            await deleteBackButton().click();
+            await addGroupBackButton().click();
+            await groupBackButton().click();
+            await expect(dashboardTitle()).toBeDisplayed();
+            await expect(testGroupSpan2()).toBeDisplayed();
+        });
+
+        it("Should edit name, focus and break time", async () => {
+            await (browser as any).refresh();
+            await expect(dashboardTitle()).toBeDisplayed();
+            await expect(testGroupSpan2()).toBeDisplayed();
+            await testGroupSpan2().click();
+            await expect(editButton()).toBeDisplayed();
+            await editButton().click();
+            await nameInput().setValue("TestGroup3");
+            await focusTen().click();
+            await breakTwenty().click();
+            await updateButton().click();
+            await expect(dashboardTitle()).toBeDisplayed();
+            await expect(testGroupSpan3()).toBeDisplayed();
+            await expect(tenMinSpan()).toBeDisplayed();
+            await expect(twentyMinSpan()).toBeDisplayed();
+        });
+
+        it("Should remove group session 3", async () => {
+            await (browser as any).refresh();
+            await expect(dashboardTitle()).toBeDisplayed();
+            await expect(testGroupSpan3()).toBeDisplayed();
+            await testGroupSpan3().click();
+            await expect(editButton()).toBeDisplayed();
+            await editButton().click();
+            await expect(deleteButton()).toBeDisplayed();
+            await deleteButton().click();
+            await expect(deleteSpan()).toBeDisplayed();
+            await deleteButtonConfirm().click();
+            await expect(dashboardTitle()).toBeDisplayed();
+            await expect(testGroupSpan3()).not.toBeDisplayed();
         });
     });
 });
