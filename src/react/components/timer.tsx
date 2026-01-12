@@ -36,12 +36,24 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
 
     const { timerOn, setTimerOn } = useContext(AvocadoroContext);
 
-    // Define the handler function once outside or inside the component scope
     const blockMouseBackForward = (e: MouseEvent) => {
         if (e.button === 3 || e.button === 4) {
             e.preventDefault();
         }
     };
+
+    // !!! Testing only, allows to change the timer !!!
+    useEffect(() => {
+        (window as any).skipForward = (mins: number, secs: number) => {
+            setMinutes(mins);
+            setSeconds(secs);
+        };
+
+        // Cleanup when component unmounts
+        return () => {
+            delete (window as any).skipForward;
+        };
+    }, []);
 
     useEffect(() => {
         window.electronAPI.setTimerOn(timerOn);
@@ -144,14 +156,14 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
             <div className="timer_button_div">
                 <Button
                     type="button"
-                    style="custom_button timer_button_main"
+                    style="custom_button timer_button_main button_start"
                     label={<IoIosPlay />}
                     onClick={() => start()}
                 />
                 <Button
                     type="button"
                     label={<IoIosPause />}
-                    style="custom_button timer_button_main"
+                    style="custom_button timer_button_main button_stop"
                     onClick={() => stop()}
                 />
             </div>
