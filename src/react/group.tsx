@@ -168,7 +168,7 @@ export default function Group() {
                             <Button
                                 onClick={() => setTimerView(true)}
                                 type="button"
-                                style="custom_button button_logo_group timer_switch_button"
+                                style="custom_button button_logo_group open_timer_button"
                                 label={<IoIosArrowUp />}
                             />
                         </div>
@@ -181,7 +181,7 @@ export default function Group() {
                             <Button
                                 onClick={() => setTimerView(false)}
                                 type="button"
-                                style="custom_button button_logo_group timer_switch_button"
+                                style="custom_button button_logo_group close_timer_button"
                                 label={<IoIosArrowDown />}
                             />
                         </div>
