@@ -3,6 +3,9 @@
 **Avocadoro** is a Pomodoro-style productivity app built with **React**, **TypeScript**, **Electron**, and **Supabase**.  
 It helps you focus on your study or learning sessions, track breaks, and visualize your progress over time.
 
+<p align="center">
+  <img src="./screenshots/1.png" width="600" title="Dashboard View">
+</p>
 ---
 
 ## 🔗 Quick Links
