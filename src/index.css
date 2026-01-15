@@ -286,7 +286,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: 25vh;
+    min-height: 16rem;
     width: 100%;
     box-sizing: border-box;
     background-color: var(--background-3);
@@ -302,6 +302,7 @@ body {
 .session_group_title {
     display: flex;
     justify-content: center;
+    text-align: center;
     font-size: 1.2rem;
     font-weight: 500;
 }
@@ -359,6 +360,7 @@ body {
     padding: 2rem;
     margin: 1rem;
     justify-content: start;
+    align-content: start;
     overflow-y: auto;
     overflow-x: hidden; /* avoid horizontal scrolling */
     scrollbar-width: thick;
