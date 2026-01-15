@@ -4,8 +4,21 @@
 It helps you focus on your study or learning sessions, track breaks, and visualize your progress over time.
 
 <p align="center">
-  <img src="./screenshots/1.png" width="600" title="Dashboard View">
+  <img src="./screenshots/1.png" title="Dashboard View">
 </p>
+<p align="center">
+  <img src="./screenshots/3.png" title="Dashboard View">
+</p>
+<p align="center">
+  <img src="./screenshots/2.png" title="Dashboard View">
+</p>
+<p align="center">
+  <img src="./screenshots/4.png" title="Dashboard View">
+</p>
+<p align="center">
+  <img src="./screenshots/5.png" title="Dashboard View">
+</p>
+
 ---
 
 ## 🔗 Quick Links
