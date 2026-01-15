@@ -4,22 +4,15 @@
 It helps you focus on your study or learning sessions, track breaks, and visualize your progress over time.
 
 <p align="center">
-  <img src="./screenshots/1.png" title="Dashboard View">
+  <img src="./screenshots/1.png" width="30%" />
+  <img src="./screenshots/3.png" width="30%" />
+  <img src="./screenshots/2.png" width="30%" />
 </p>
 <p align="center">
-  <img src="./screenshots/3.png" title="Dashboard View">
-</p>
-<p align="center">
-  <img src="./screenshots/2.png" title="Dashboard View">
-</p>
-<p align="center">
-  <img src="./screenshots/4.png" title="Dashboard View">
-</p>
-<p align="center">
-  <img src="./screenshots/5.png" title="Dashboard View">
+  <img src="./screenshots/4.png" width="30%" />
+  <img src="./screenshots/5.png" width="30%" />
 </p>
 
----
 
 ## 🔗 Quick Links
 
@@ -211,15 +204,14 @@ To open a session group, click its name on the dashboard. This view contains the
 
 To access the settings menu, click the **Settings icon** located in the **bottom-right corner** of the Dashboard.
 
-
-
 Currently, the settings menu allows you to manage your profile and account data:
 
-**Removing your Account:** 
-- 1. Click the **Remove Account** button.
-- 2. To confirm the deletion, click the **Trash Can icon**.
-<br>
-**⚠️ Important**
+**Removing your Account:**
+
+-   1. Click the **Remove Account** button.
+-   2. To confirm the deletion, click the **Trash Can icon**.
+       <br>
+       **⚠️ Important**
 - **This action cannot be reversed.** Removing your account will permanently delete all of your account information, session groups, and focus history from the database.
 
 <a id="testing--building"></a>
