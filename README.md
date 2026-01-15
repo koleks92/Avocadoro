@@ -82,7 +82,9 @@ When you first launch Avocadoro, you will see the **Login Page**. You have three
 - **Google Login:** Click the **Google Logo** and follow the browser instructions to sign in.
 
 - **Apple Login:** Click the **Apple Logo** and follow the prompts to sign in with your Apple ID.
+
 ---
+
 ### Creating an Account
 
 If you are a new user:
@@ -94,7 +96,9 @@ If you are a new user:
 3.  Click **Sign Up**.
 
 4.  If the email is not already in the database, your account will be created and you will be **automatically logged in**.
+
 ---
+
 ### Navigating the Dashboard
 
 Once logged in, the **Dashboard** is your main hub:
@@ -106,7 +110,9 @@ Once logged in, the **Dashboard** is your main hub:
 - **Settings:** Access app preferences via the button in the **bottom-left corner**.
 
 - **Opening Sessions:** In the middle of the screen, you will see your created session groups. To open one, simply **click on the square box** containing the group's name.
+
 ---
+
 ### Creating a New Session Group
 
 To add a new session group, click the button in the top-right corner and follow these steps:
@@ -118,7 +124,9 @@ To add a new session group, click the button in the top-right corner and follow 
 3. **Break Time**: Select your break duration between 5 and 60 minutes (available in 5-minute intervals).
 
 4. **Confirm**: Click Add to create the group and return to the dashboard.
+
 ---
+
 ### Editing an Existing Session Group
 
 To **modify** a group you have already created:
@@ -140,6 +148,7 @@ To **delete** a group you have already created:
 **Discard Changes**: To cancel any edits and return to the session view, click the Back ﹤ button in the top-left corner.
 
 ---
+
 ### Session View & Timer
 
 To open a session group, click its name on the dashboard. This view contains the following:
@@ -180,7 +189,22 @@ To open a session group, click its name on the dashboard. This view contains the
 
 - S**ession Transitions**: When the Focus time ends, a sound alarm will play, and the status will automatically change to Break. The break timer will then start. An alarm also sounds when the break time concludes.
 
-### Session Group / Timer
+---
+
+### Settings
+
+To access the settings menu, click the **Settings icon** located in the **bottom-right corner** of the Dashboard.
+
+
+
+Currently, the settings menu allows you to manage your profile and account data:
+
+**Removing your Account:** 
+- 1. Click the **Remove Account** button.
+- 2. To confirm the deletion, click the **Trash Can icon**.
+<br>
+**⚠️ Important**
+- **This action cannot be reversed.** Removing your account will permanently delete all of your account information, session groups, and focus history from the database.
 
 <a id="testing--building"></a>
 
@@ -205,7 +229,6 @@ To run the test suite:
 ```
 npm run wdio
 ```
-
 
 <a id="contributing"></a>
 
