@@ -33,16 +33,15 @@ export default function Login() {
     const [authLoaded, setAuthLoaded] = useState(false);
 
     useEffect(() => {
-        // --- 1. Initial Session Load ---
+        // Initial Session Load 
         supabase.auth.getSession().then(({ data }) => {
             setSession(data.session);
-            setAuthLoaded(true); // Initial state resolved
+            setAuthLoaded(true); 
         });
 
-        // --- 2. Supabase Real-time Listener ---
+        // Supabase Real-time Listener
         const { data: listener } = supabase.auth.onAuthStateChange(
             (_event, session) => {
-                // This is the single source of truth for session updates
                 setSession(session);
             }
         );
@@ -59,7 +58,7 @@ export default function Login() {
                         const urlObject = new URL(url);
                         const hashParams = new URLSearchParams(
                             urlObject.hash.substring(1)
-                        ); // substring(1) to remove '#'
+                        );
 
                         const access_token = hashParams.get("access_token");
                         const refresh_token = hashParams.get("refresh_token");
@@ -97,14 +96,14 @@ export default function Login() {
                 }
             );
 
-            cleanupFns.push(cleanupDeepLink); // Add deep link cleanup
-            window.electronAPI.setTimer(""); // Your existing IPC call
+            cleanupFns.push(cleanupDeepLink); 
+            // IPC call
+            window.electronAPI.setTimer(""); 
         }
 
-        // 💡 FIX 2: Return a function that runs ALL c
-        // leanup functions (unified cleanup).
+        // Return a function that runs ALL cleanup functions.
         return () => cleanupFns.forEach((fn) => fn());
-    }, []); // Dependency array is correct
+    }, []);
 
     useEffect(() => {
         if (!authLoaded) return; // prevent early redirect flicker
