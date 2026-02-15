@@ -52,7 +52,7 @@ export default function Settings() {
                         <div className="settings_confirm_div">
                             <span className="settings_title_span">
                                 We're sorry to see you go. If you delete your
-                                account, you’ll lose access to your progress and
+                                account, you'll lose access to your progress and
                                 saved settings forever.
                             </span>
 
