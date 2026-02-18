@@ -85,7 +85,8 @@ const createWindow = () => {
     }
 
     // Open the DevTools.
-    mainWindow.webContents.openDevTools();
+    mainWindow.webContents.openDevTools({ mode: 'detach' });
+
 };
 
 // --- App Lifecycle and Deep Link Handling ---
