@@ -52,13 +52,13 @@ function SessionGroup({
                     <div>{time}</div>
                 </div>
                 <div className="session_group_times">
-                    <div>
-                        <div>Focus </div>
-                        <div>{focusTimer}min</div>
+                    <div className="center_column_div">
+                        <div className="center_column_div">Focus</div>
+                        <div className="center_column_div">{focusTimer}min</div>
                     </div>
                     <div>
-                        <div>Break</div>
-                        <div>{breakTimer}min</div>
+                        <div className="center_column_div">Break</div>
+                        <div className="center_column_div">{breakTimer}min</div>
                     </div>
                 </div>
             </div>
