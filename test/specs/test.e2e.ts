@@ -452,13 +452,13 @@ describe("Timer flow", () => {
             await startButton().click();
             await expect(focusTitleSpan()).toBeDisplayed();
             await (browser as any).execute(() => {
-                (window as any).skipForward(0, 2);
+                (window as any).skipForward(5);
             });
             await (browser as any).pause(3000);
             await expect(breakTitleSpan()).toBeDisplayed();
 
             await (browser as any).execute(() => {
-                (window as any).skipForward(0, 2);
+                (window as any).skipForward(5);
             });
             await (browser as any).pause(3000);
             await expect(focusTitleSpan()).toBeDisplayed();
