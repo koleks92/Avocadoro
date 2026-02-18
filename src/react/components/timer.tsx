@@ -27,14 +27,17 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
 
     const [timerMode, setTimerMode] = useState<timerModeType>("focus");
 
-    const [minutes, setMinutes] = useState<number>(focusTimer);
-    const [seconds, setSeconds] = useState<number>(0);
+    const [totalSeconds, setTotalSeconds] = useState<number>(focusTimer * 60);
 
     const [message, setMessage] = useState<string>("");
 
     const timerRef = useRef<number | null>(null);
 
     const { timerOn, setTimerOn } = useContext(AvocadoroContext);
+
+    // Calculate display values
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
 
     const blockMouseBackForward = (e: MouseEvent) => {
         if (e.button === 3 || e.button === 4) {
@@ -44,9 +47,8 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
 
     // !!! Testing only, allows to change the timer !!!
     useEffect(() => {
-        (window as any).skipForward = (mins: number, secs: number) => {
-            setMinutes(mins);
-            setSeconds(secs);
+        (window as any).skipForward = (secs: number) => {
+            setTotalSeconds(secs);
         };
 
         // Cleanup when component unmounts
@@ -79,45 +81,28 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
         // Timer
         if (timerRef.current === null) return;
 
-        if (seconds <= 0) {
-            setSeconds(59);
-            setMinutes((prev) => prev - 1);
-        }
-    }, [seconds]);
-
-    useEffect(() => {
-        if (seconds === 0 && minutes === 0) {
-            setSeconds(0);
+        if (totalSeconds === 0) {
             if (timerMode === "break") {
-                // Set focus mode
-                setMinutes(focusTimer);
                 setTimerMode("focus");
-                // Play the sound
+                setTotalSeconds(focusTimer * 60);
                 const audio = new Audio(focusTimeSound);
-                audio.play().catch((e) => {
-                    console.log("Playback failed:", e);
-                });
+                audio.play().catch((e) => console.log("Playback failed:", e));
             } else {
-                // Pass the complete session
                 onComplete(focusTimer);
-                // Set break mode
-                setMinutes(breakTimer);
                 setTimerMode("break");
-                // Play the sound
+                setTotalSeconds(breakTimer * 60);
                 const audio = new Audio(breakTimeSound);
-                audio.play().catch((e) => {
-                    console.log("Playback failed:", e);
-                });
+                audio.play().catch((e) => console.log("Playback failed:", e));
             }
         }
-    }, [seconds, minutes]);
+    }, [totalSeconds]);
 
     const start = (): void => {
         setMessage("");
         if (timerRef.current !== null) return; // prevent multiple intervals
         setTimerOn(true);
         timerRef.current = window.setInterval(() => {
-            setSeconds((prev) => prev - 1);
+            setTotalSeconds((prev) => prev - 1);
         }, 1000);
     };
 
@@ -134,8 +119,7 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
             clearInterval(timerRef.current);
         }
         timerRef.current = null;
-        setMinutes(focusTimer);
-        setSeconds(0);
+        setTotalSeconds(focusTimer * 60);
         setTimerOn(false);
         setTimerMode("focus");
         setMessage("");
