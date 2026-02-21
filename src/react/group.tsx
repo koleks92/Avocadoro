@@ -189,8 +189,8 @@ export default function Group() {
                         <div className="group_second_div">
                             <Timer
                                 onComplete={onCompleteHandler}
-                                focus_timer={state.focus_timer}
-                                break_timer={state.break_timer}
+                                focusTimer={state.focus_timer}
+                                breakTimer={state.break_timer}
                             />
                             <span className="message_span">{message}</span>
                         </div>

@@ -17,13 +17,12 @@ type timerModeType = "focus" | "break";
 
 type TimerProps = {
     onComplete?: (minutes: number) => void;
-    focus_timer?: number;
-    break_timer?: number;
+    focusTimer?: number;
+    breakTimer?: number;
 };
 
-function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
-    const [focusTimer, setFocusTimer] = useState<number>(focus_timer);
-    const [breakTimer, setBreakTimer] = useState<number>(break_timer);
+function Timer({ onComplete, focusTimer, breakTimer }: TimerProps) {
+
 
     const [timerMode, setTimerMode] = useState<timerModeType>("focus");
 
