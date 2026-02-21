@@ -125,11 +125,51 @@ function Timer({ onComplete, focus_timer, break_timer }: TimerProps) {
         setMessage("");
     };
 
+    const skip = (): void => {
+        // Clear existing interval if running
+        if (timerRef.current !== null) {
+            clearInterval(timerRef.current);
+            timerRef.current = null;
+        }
+
+        // Reset to focus mode
+        setTimerMode("focus");
+        setTotalSeconds(focusTimer * 60);
+        setMessage("");
+
+        // Restart timer if it was running
+        if (timerOn) {
+            timerRef.current = window.setInterval(() => {
+                setTotalSeconds((prev) => prev - 1);
+            }, 1000);
+        }
+    };
+
     return (
         <div className="timer_root">
             <span className="timer_title_span">
                 {timerMode === "break" ? "Break" : "Focus"}
             </span>
+            {timerMode === "break" ? (
+                <div>
+                    <Button
+                        type="button"
+                        style="custom_button custom_button_nobg button_skip"
+                        label="Skip"
+                        onClick={() => skip()}
+                    />
+                </div>
+            ) : (
+                <div style={{ visibility: "hidden" }}>
+                    <Button
+                        type="button"
+                        style="custom_button custom_button_nobg button_skip"
+                        label="Skip"
+                        onClick={() => skip()}
+                    />
+                </div>
+            )}
+            <div></div>
             <span className="timer_time_span">
                 {String(minutes).padStart(2, "0")[0]}
                 {String(minutes).padStart(2, "0")[1]}:
