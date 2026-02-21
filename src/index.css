@@ -71,6 +71,10 @@ body {
     transition: 0.2s ease;
 }
 
+.custom_button_nobg {
+    background: none;
+}
+
 .custom_button:hover {
     background: var(--primary-green-dark);
 }
@@ -140,7 +144,6 @@ body {
 .timer_title_span {
     font-size: 4rem;
     font-weight: bold;
-    margin: 1rem;
 }
 
 .timer_time_span {
