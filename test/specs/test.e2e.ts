@@ -397,6 +397,7 @@ describe("Timer flow", () => {
     const openTimerButton = () => $(".group_result_div .open_timer_button");
     const closeTimerButton = () => $(".group_timer_div .close_timer_button");
     const goBackButton = () => $(".go_back_button");
+    const skipButton = () => $(".button_skip");
 
     const addNewSessionSpan = () => $(".add_group_title_span");
     const testGroupSpan = () => $(".session_group_title=TestGroup");
@@ -480,9 +481,25 @@ describe("Timer flow", () => {
             await (browser as any).pause(1000);
         });
 
-        it("Should not allow to go back when timer is on", async () => {
+        it("Should allow to skip the break", async () => {
             await expect(dashboardTitle()).toBeDisplayed();
             await testGroupSpan().click();
+            await expect(startButton()).toBeDisplayed();
+            await startButton().click();
+            await expect(focusTitleSpan()).toBeDisplayed();
+            await (browser as any).execute(() => {
+                (window as any).skipForward(5);
+            });
+            await (browser as any).pause(3000);
+            await expect(breakTitleSpan()).toBeDisplayed();
+            await expect(skipButton()).toBeDisplayed();
+            await skipButton().click();
+            await expect(focusTitleSpan()).toBeDisplayed();
+            await (browser as any).pause(3000);
+            await restartButton().doubleClick();
+        });
+
+        it("Should not allow to go back when timer is on", async () => {
             await startButton().click();
             await (browser as any).pause(1000);
             await goBackButton().click();
