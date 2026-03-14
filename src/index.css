@@ -9,7 +9,7 @@
     --primary-green: #6cbf4f;
     --primary-green-dark: #4f9a39;
     --accent-green-light: #a7e68a;
-    --accent-green-deep: #2f7a24;
+    --accent-green-deep: #42f7a2;
 }
 
 * {
@@ -44,6 +44,7 @@ body {
 
 .disabled_span {
     font-size: 0.9rem;
+    min-height: 1.3rem;
     margin: 0.2rem;
     color: red;
     text-align: center;
