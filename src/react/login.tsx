@@ -17,33 +17,32 @@ export default function Login() {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [confirmPassword, setConfirmPassword] = useState<string>("");
-    const [message, setMessage] = useState<string>("");
 
     const [signUpView, setSignUpView] = useState<boolean>(false);
-    const [signUpMessage, setSignUpMessage] = useState<string>();
 
     const [passwordInvalid, setPasswordInvalid] = useState<boolean>(false);
     const [confirmPasswordInvalid, setConfirmPasswordInvalid] =
         useState<boolean>(false);
     const [emailInvalid, setEmailInvalid] = useState<boolean>(false);
 
-    const { session, supabase, setSession } = useContext(AvocadoroContext);
+    const { session, supabase, setSession, message, setMessage } =
+        useContext(AvocadoroContext);
     const navigate = useNavigate();
 
     const [authLoaded, setAuthLoaded] = useState(false);
 
     useEffect(() => {
-        // Initial Session Load 
+        // Initial Session Load
         supabase.auth.getSession().then(({ data }) => {
             setSession(data.session);
-            setAuthLoaded(true); 
+            setAuthLoaded(true);
         });
 
         // Supabase Real-time Listener
         const { data: listener } = supabase.auth.onAuthStateChange(
             (_event, session) => {
                 setSession(session);
-            }
+            },
         );
 
         // Array to hold all cleanup functions
@@ -57,7 +56,7 @@ export default function Login() {
                     try {
                         const urlObject = new URL(url);
                         const hashParams = new URLSearchParams(
-                            urlObject.hash.substring(1)
+                            urlObject.hash.substring(1),
                         );
 
                         const access_token = hashParams.get("access_token");
@@ -82,7 +81,7 @@ export default function Login() {
                                             window.history.replaceState(
                                                 null,
                                                 "",
-                                                "/#/"
+                                                "/#/",
                                             );
                                         }
                                     }
@@ -93,12 +92,12 @@ export default function Login() {
                     } catch (error) {
                         console.error("Error processing deep link URL:", error);
                     }
-                }
+                },
             );
 
-            cleanupFns.push(cleanupDeepLink); 
+            cleanupFns.push(cleanupDeepLink);
             // IPC call
-            window.electronAPI.setTimer(""); 
+            window.electronAPI.setTimer("");
         }
 
         // Return a function that runs ALL cleanup functions.
@@ -147,6 +146,8 @@ export default function Login() {
     async function signUpHandler(e: React.FormEvent): Promise<void> {
         e.preventDefault();
 
+        setMessage("");
+
         // Email validation: must include "@" and "."
         const emailIsInvalid = !email.includes("@") || !email.includes(".");
         setEmailInvalid(emailIsInvalid);
@@ -173,7 +174,7 @@ export default function Login() {
 
             if (error) {
                 console.error("Signup error:", error);
-                setSignUpMessage(error.message);
+                setMessage(error.message);
 
                 return;
             }
@@ -195,7 +196,7 @@ export default function Login() {
 
         if (error) {
             console.error("Signup error:", error);
-            setSignUpMessage(error.message);
+            setMessage(error.message);
 
             return;
         }
@@ -212,14 +213,13 @@ export default function Login() {
 
         if (error) {
             console.error("Signup error:", error);
-            setSignUpMessage(error.message);
+            setMessage(error.message);
             return;
         }
     }
 
     function clearMessages(): void {
         setMessage("");
-        setSignUpMessage("");
         setPasswordInvalid(false);
         setEmailInvalid(false);
         setConfirmPasswordInvalid(false);
@@ -343,7 +343,7 @@ export default function Login() {
                                         </span>
                                     ) : (
                                         <span className="signup_message warning_span">
-                                            {signUpMessage}
+                                            {message}
                                         </span>
                                     )}
                                 </div>

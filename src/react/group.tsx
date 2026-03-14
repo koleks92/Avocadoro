@@ -16,7 +16,6 @@ export default function Group() {
 
     const [timerView, setTimerView] = useState<boolean>(true);
 
-    const [message, setMessage] = useState<string>("");
 
     const [totalMinutes, setTotalMinutes] = useState<number>(
         state.total_minutes
@@ -24,7 +23,7 @@ export default function Group() {
     const [avocadoroAmount, setAvocadoroAmount] = useState<number>(0);
     const [totalTime, setTotalTime] = useState<string>("");
 
-    const { session, supabase, timerOn, setTimerOn } =
+    const { session, supabase, timerOn, setTimerOn, message, setMessage } =
         useContext(AvocadoroContext);
 
     function convertTime(): void {

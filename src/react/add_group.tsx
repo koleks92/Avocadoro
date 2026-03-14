@@ -21,9 +21,8 @@ export default function AddGroup() {
     const [name, setName] = useState<string>("");
     const [focusTimer, setFocusTimer] = useState<number>(25);
     const [breakTimer, setBreakTimer] = useState<number>(5);
-    const [message, setMessage] = useState<string>("");
 
-    const { session, supabase } = useContext(AvocadoroContext);
+    const { session, supabase, message, setMessage } = useContext(AvocadoroContext);
 
     useEffect(() => {
         if (id && state && state.edit) {
