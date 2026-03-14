@@ -1,5 +1,5 @@
 ## Main TODO:
-- add "skip break button"
+- Add Anonymous Mode
 
 ## Extra TODO:
 - Custom timer ( without login + just custom timer )
