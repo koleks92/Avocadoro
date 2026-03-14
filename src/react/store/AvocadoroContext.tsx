@@ -8,11 +8,13 @@ type AvocadoroContextType = {
     setSession: React.Dispatch<React.SetStateAction<Session | null>>;
     timerOn: boolean;
     setTimerOn: React.Dispatch<React.SetStateAction<boolean>>;
+    message: string;
+    setMessage: React.Dispatch<React.SetStateAction<string>>;
 };
 
 // Create the context (default: null so we can handle initialization)
 export const AvocadoroContext = createContext<AvocadoroContextType | null>(
-    null
+    null,
 );
 
 // Define props type for the Provider
@@ -23,13 +25,14 @@ type AvocadoroProviderProps = {
 // Create Supabase client
 const supabase = createClient(
     import.meta.env.VITE_SUPABASE_URL!,
-    import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY!
+    import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY!,
 );
 
 // The provider itself
 export function AvocadoroProvider({ children }: AvocadoroProviderProps) {
     const [session, setSession] = useState<Session | null>(null);
     const [timerOn, setTimerOn] = useState<boolean>(false);
+    const [message, setMessage] = useState<string>("");
 
     useEffect(() => {
         supabase.auth
@@ -38,13 +41,15 @@ export function AvocadoroProvider({ children }: AvocadoroProviderProps) {
         const {
             data: { subscription },
         } = supabase.auth.onAuthStateChange((_event, session) =>
-            setSession(session)
+            setSession(session),
         );
         return () => subscription.unsubscribe();
     }, []);
 
     return (
-        <AvocadoroContext.Provider value={{ supabase, session, setSession, timerOn, setTimerOn }}>
+        <AvocadoroContext.Provider
+            value={{ supabase, session, setSession, timerOn, setTimerOn, message, setMessage }}
+        >
             {children}
         </AvocadoroContext.Provider>
     );
