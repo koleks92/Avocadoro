@@ -453,6 +453,18 @@ export default function Login() {
                                             clearMessages();
                                         }}
                                     />
+                                    <Button
+                                        label="Continue without an account"
+                                        type="button"
+                                        style="custom_button button_nobg"
+                                        onClick={() => {
+                                            navigate("/add_group", {
+                                                state: {
+                                                    anonymousMode: true,
+                                                },
+                                            });
+                                        }}
+                                    />
                                 </div>
                             </form>
                         )}
