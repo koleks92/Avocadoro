@@ -4,6 +4,8 @@ import Dashboard from "../dashboard";
 import AddGroup from "../add_group";
 import Group from "../group";
 import Settings from "../settings";
+import AnonymousTimer from "../anonymous_timer";
+
 
 import { AnimatePresence } from "framer-motion";
 
@@ -17,8 +19,10 @@ function AnimatedRoutes() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/add_group" element={<AddGroup />} />
                 <Route path="/group/:id" element={<Group />} />
+                <Route path="/group" element={<Group />} />
                 <Route path="/edit_group/:id" element={<AddGroup />} />
                 <Route path="/settings" element={<Settings />} />
+                <Route path="/anonymous_timer" element={<AnonymousTimer />} />
             </Routes>
         </AnimatePresence>
     );
