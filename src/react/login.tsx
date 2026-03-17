@@ -456,7 +456,7 @@ export default function Login() {
                                     <Button
                                         label="Continue without an account"
                                         type="button"
-                                        style="custom_button button_nobg"
+                                        style="custom_button button_nobg anonymous_button"
                                         onClick={() => {
                                             navigate("/add_group", {
                                                 state: {

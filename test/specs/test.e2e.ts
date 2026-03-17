@@ -577,3 +577,40 @@ describe("Timer flow", () => {
         });
     });
 });
+
+describe("Anoymous Timer", () => {
+    const anonymousButton = () => $("button=Continue without an account");
+    const createButton = () => $("button=Create");
+    const editButton = () => $(".edit_button");
+    const addNewSessionSpan = () => $(".add_group_title_span");
+    const focusFive = () => $(".focus_timer").$("button=5");
+    const breakTen = () => $(".break_timer").$("button=10");
+    const startButton = () => $(".button_start");
+    const stopButton = () => $(".button_stop");
+    const restartButton = () => $(".timer_button_restart");
+    const quoteSpan = () => $(".quote_printer_root");
+    const testGroupSpan = () => $(".session_group_title");
+    const goBackButton = () => $(".go_back_button");
+
+    describe("Anonymous Timer Flow", () => {
+        it("Should open anonymous timer screen", async () => {
+            await (browser as any).refresh();
+            await expect(anonymousButton()).toBeDisplayed();
+            await anonymousButton().click();
+            await expect(addNewSessionSpan()).not.toBeDisplayed();
+            await expect(focusFive()).toBeDisplayed();
+            await focusFive().click();
+            await expect(breakTen()).toBeDisplayed();
+            await breakTen().click();
+            await expect(createButton()).toBeDisplayed();
+            await createButton().click();
+            await expect(editButton()).not.toBeDisplayed();
+            await expect(quoteSpan()).toBeDisplayed();
+            await expect(startButton()).toBeDisplayed();
+            await expect(stopButton()).toBeDisplayed();
+            await expect(restartButton()).toBeDisplayed();
+            await expect(testGroupSpan()).not.toBeDisplayed();
+            await expect(goBackButton()).toBeDisplayed();
+        });
+    });
+});
