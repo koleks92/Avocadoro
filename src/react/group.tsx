@@ -16,9 +16,8 @@ export default function Group() {
 
     const [timerView, setTimerView] = useState<boolean>(true);
 
-
     const [totalMinutes, setTotalMinutes] = useState<number>(
-        state.total_minutes
+        state.total_minutes,
     );
     const [avocadoroAmount, setAvocadoroAmount] = useState<number>(0);
     const [totalTime, setTotalTime] = useState<string>("");
@@ -38,6 +37,12 @@ export default function Group() {
     }
 
     useEffect(() => {
+        if (state.timer_on) {
+            console.log("Timer is on!")
+        }
+    }, [state])
+
+    useEffect(() => {
         setAvocadoroAmount(Math.floor(totalMinutes / state.focus_timer));
         convertTime();
     }, [totalMinutes]);
@@ -50,7 +55,7 @@ export default function Group() {
         let timeout: ReturnType<typeof setTimeout>;
 
         const el = document.querySelector(
-            ".group_second_div"
+            ".group_second_div",
         ) as HTMLElement | null;
 
         if (timerView === false && el) {
@@ -64,7 +69,7 @@ export default function Group() {
         return () => clearTimeout(timeout);
     }, [timerView]);
 
-    async function onCompleteHandler(minutes: number): Promise<void> {
+    async function onCompleteHandler(minutes: number, finishTime: string): Promise<void> {
         setMessage("");
 
         // Insert data
@@ -73,6 +78,7 @@ export default function Group() {
             .insert({
                 session_group_id: id,
                 duration_minutes: minutes,
+                finish_time: finishTime
             })
             .select();
 
@@ -190,6 +196,7 @@ export default function Group() {
                                 onComplete={onCompleteHandler}
                                 focusTimer={state.focus_timer}
                                 breakTimer={state.break_timer}
+                                sessionGroupId={state.id}
                             />
                             <span className="message_span">{message}</span>
                         </div>
