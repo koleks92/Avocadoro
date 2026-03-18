@@ -13,6 +13,8 @@ type SessionGroups = {
     name: string;
     focus_timer: number;
     break_timer: number;
+    timer_on: boolean;
+    finish_time: string;
     total_minutes: number;
 };
 
@@ -40,6 +42,8 @@ export default function Dashboard() {
                     name,
                     focus_timer,
                     break_timer,
+                    timer_on,
+                    finish_time,
                     sessions ( duration_minutes )
                     `
                 )
