@@ -16,23 +16,28 @@ import QuotePrinter from "./quotePrinter";
 type timerModeType = "focus" | "break";
 
 type TimerProps = {
-    onComplete?: (minutes: number) => void;
+    onComplete?: (minutes: number, finishTime: string) => void;
     focusTimer?: number;
     breakTimer?: number;
+    sessionGroupId?: string;
 };
 
-function Timer({ onComplete, focusTimer, breakTimer }: TimerProps) {
-
-
+function Timer({
+    onComplete,
+    focusTimer,
+    breakTimer,
+    sessionGroupId,
+}: TimerProps) {
     const [timerMode, setTimerMode] = useState<timerModeType>("focus");
 
     const [totalSeconds, setTotalSeconds] = useState<number>(focusTimer * 60);
+    const [finishTime, setFinishTime] = useState<string>();
 
     const [message, setMessage] = useState<string>("");
 
     const timerRef = useRef<number | null>(null);
 
-    const { timerOn, setTimerOn } = useContext(AvocadoroContext);
+    const { timerOn, setTimerOn, supabase } = useContext(AvocadoroContext);
 
     // Calculate display values
     const minutes = Math.floor(totalSeconds / 60);
@@ -42,6 +47,44 @@ function Timer({ onComplete, focusTimer, breakTimer }: TimerProps) {
         if (e.button === 3 || e.button === 4) {
             e.preventDefault();
         }
+    };
+
+    // Update database with timer_on = True and finish_date
+    const setTimerAndFinishTime = async (reset: boolean): Promise<void> => {
+        let newFinishTime: string;
+
+        if (reset) {
+            // Reset the total seconds
+            newFinishTime = new Date(
+                Date.now() + focusTimer * 60 * 1000,
+            ).toISOString();
+        } else {
+            // Kepp the total seconds
+            newFinishTime = new Date(
+                Date.now() + totalSeconds * 1000,
+            ).toISOString();
+        }
+
+        setFinishTime(newFinishTime);
+
+        const { data, error } = await supabase
+            .from("session_groups")
+            .update({
+                timer_on: true,
+                finish_time: newFinishTime,
+            })
+            .eq("id", sessionGroupId);
+    };
+
+    // Update database with timer_on = False and finish_date = null
+    const unsetTimerAndFinishDate = async (): Promise<void> => {
+        const { data, error } = await supabase
+            .from("session_groups")
+            .update({
+                timer_on: false,
+                finish_time: null,
+            })
+            .eq("id", sessionGroupId);
     };
 
     // !!! Testing only, allows to change the timer !!!
@@ -86,12 +129,14 @@ function Timer({ onComplete, focusTimer, breakTimer }: TimerProps) {
                 setTotalSeconds(focusTimer * 60);
                 const audio = new Audio(focusTimeSound);
                 audio.play().catch((e) => console.log("Playback failed:", e));
+                setTimerAndFinishTime(true);
             } else {
-                onComplete(focusTimer);
+                onComplete(focusTimer, finishTime);
                 setTimerMode("break");
                 setTotalSeconds(breakTimer * 60);
                 const audio = new Audio(breakTimeSound);
                 audio.play().catch((e) => console.log("Playback failed:", e));
+                unsetTimerAndFinishDate();
             }
         }
     }, [totalSeconds]);
@@ -103,6 +148,9 @@ function Timer({ onComplete, focusTimer, breakTimer }: TimerProps) {
         timerRef.current = window.setInterval(() => {
             setTotalSeconds((prev) => prev - 1);
         }, 1000);
+
+        // Update database with timer_on = True and finish_date
+        setTimerAndFinishTime(false);
     };
 
     const stop = (): void => {
@@ -111,6 +159,9 @@ function Timer({ onComplete, focusTimer, breakTimer }: TimerProps) {
             clearInterval(timerRef.current);
             timerRef.current = null;
         }
+
+        // Update database with timer_on = False and finish_date = null
+        unsetTimerAndFinishDate();
     };
 
     const reset = (): void => {
@@ -122,9 +173,12 @@ function Timer({ onComplete, focusTimer, breakTimer }: TimerProps) {
         setTimerOn(false);
         setTimerMode("focus");
         setMessage("");
+
+        // Update database with timer_on = False and finish_date = null
+        unsetTimerAndFinishDate();
     };
 
-    const skip = (): void => {
+    const skip = async (): Promise<void> => {
         // Clear existing interval if running
         if (timerRef.current !== null) {
             clearInterval(timerRef.current);
@@ -141,6 +195,9 @@ function Timer({ onComplete, focusTimer, breakTimer }: TimerProps) {
             timerRef.current = window.setInterval(() => {
                 setTotalSeconds((prev) => prev - 1);
             }, 1000);
+
+            // Update database with timer_on = True and finish_date
+            setTimerAndFinishTime(true);
         }
     };
 
