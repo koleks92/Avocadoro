@@ -14,6 +14,8 @@ export default function Group() {
     const { state } = useLocation();
     const navigate = useNavigate();
 
+    const [loading, setLoading] = useState<boolean>(true);
+
     const [timerView, setTimerView] = useState<boolean>(true);
 
     const [totalMinutes, setTotalMinutes] = useState<number>(
@@ -21,6 +23,10 @@ export default function Group() {
     );
     const [avocadoroAmount, setAvocadoroAmount] = useState<number>(0);
     const [totalTime, setTotalTime] = useState<string>("");
+
+    // Timer on state
+    const [timerOnSupabase, setTimerOnSupabase] = useState<boolean>(false);
+    const [finishTimeSupabase, setFinishTimeSupabase] = useState<string>("");
 
     const { session, supabase, timerOn, setTimerOn, message, setMessage } =
         useContext(AvocadoroContext);
@@ -37,10 +43,23 @@ export default function Group() {
     }
 
     useEffect(() => {
-        if (state.timer_on) {
-            console.log("Timer is on!")
-        }
-    }, [state])
+        const checkTimer = async (): Promise<void> => {
+            const { data, error } = await supabase
+                .from("session_groups")
+                .select("timer_on, finish_time")
+                .eq("id", id)
+                .single();
+
+            if (data?.timer_on) {
+                setTimerOnSupabase(data.timer_on);
+                setFinishTimeSupabase(data.finish_time);
+            }
+
+            setLoading(false);
+        };
+
+        checkTimer();
+    }, []);
 
     useEffect(() => {
         setAvocadoroAmount(Math.floor(totalMinutes / state.focus_timer));
@@ -69,7 +88,10 @@ export default function Group() {
         return () => clearTimeout(timeout);
     }, [timerView]);
 
-    async function onCompleteHandler(minutes: number, finishTime: string): Promise<void> {
+    async function onCompleteHandler(
+        minutes: number,
+        finishTime: number,
+    ): Promise<void> {
         setMessage("");
 
         // Insert data
@@ -78,7 +100,7 @@ export default function Group() {
             .insert({
                 session_group_id: id,
                 duration_minutes: minutes,
-                finish_time: finishTime
+                finish_time: new Date(finishTime).toISOString(),
             })
             .select();
 
@@ -86,7 +108,11 @@ export default function Group() {
         setTotalMinutes((prev) => prev + state.focus_timer);
 
         if (error) {
-            setMessage(error.message);
+            // setMessage(error.message);
+            setMessage("Cannot save data.\n Are you running a timer on another device ?");
+            setTimeout(() => {
+                setMessage("");
+            }, 15000);
         }
     }
 
@@ -106,6 +132,10 @@ export default function Group() {
         } else {
             navigate(-1);
         }
+    }
+
+    if (loading) {
+        return null;
     }
 
     return (
@@ -197,6 +227,8 @@ export default function Group() {
                                 focusTimer={state.focus_timer}
                                 breakTimer={state.break_timer}
                                 sessionGroupId={state.id}
+                                timerOnSupabase={timerOnSupabase}
+                                finishTimeSupabase={finishTimeSupabase}
                             />
                             <span className="message_span">{message}</span>
                         </div>
