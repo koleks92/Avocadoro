@@ -91,6 +91,7 @@ function Timer({
     useEffect(() => {
         // Check if timer is running on another device and start the timer
         if (timerOnSupabase && finishTimeSupabase) {
+            console.log("running");
             const finishTime = new Date(finishTimeSupabase + "Z").getTime();
             const remaining = Math.ceil((finishTime - Date.now()) / 1000);
 
@@ -146,6 +147,11 @@ function Timer({
 
         // Timer functions
         if (totalSeconds === 0) {
+            if (timerRef.current !== null) {
+                clearInterval(timerRef.current);
+                timerRef.current = null;
+            }
+
             if (timerMode === "break") {
                 // Set focus mode, reset the timer and play the sounds/vibrations
                 setTimerMode("focus");
