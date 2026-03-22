@@ -54,6 +54,7 @@ function Timer({
 
     // Update database with timer_on = True and finish_date
     const setTimerAndFinishTime = async (reset: boolean): Promise<void> => {
+        console.log("here")
         let newFinishTime: string;
 
         if (reset) {

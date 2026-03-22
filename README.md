@@ -70,6 +70,10 @@ VITE_SUPABASE_URL=your_supabase_url_here
 VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_anon_key_here
 ```
 
+### SQL project schema:
+
+<img src="./screenshots/supabase.png"/>
+
 ### 4. Run the App
 
 To start the application in development mode:
