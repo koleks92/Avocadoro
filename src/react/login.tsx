@@ -12,6 +12,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import logo from "./images/Logo.png";
 import logoText from "./images/logo_text.png";
 import MotionDiv from "./components/motionDiv";
+import { emailValidation, passwordValidation } from "./util/validation";
 
 export default function Login() {
     const [email, setEmail] = useState<string>("");
@@ -116,13 +117,11 @@ export default function Login() {
 
         setMessage("");
 
-        // Email validation: must include "@" and "."
-        const emailIsInvalid = !email.includes("@") || !email.includes(".");
-        setEmailInvalid(emailIsInvalid);
+        // Values validations
+        const emailIsInvalid = !emailValidation(email);
+        const passwordIsInvalid = !passwordValidation(password);
 
-        // Password validation:
-        // must be >= 10 characters and contain at least 1 digit
-        const passwordIsInvalid = password.length < 10 || !/\d/.test(password); // \d checks for a digit
+        setEmailInvalid(emailIsInvalid);
         setPasswordInvalid(passwordIsInvalid);
 
         if (!emailIsInvalid && !passwordIsInvalid) {
@@ -148,18 +147,13 @@ export default function Login() {
 
         setMessage("");
 
-        // Email validation: must include "@" and "."
-        const emailIsInvalid = !email.includes("@") || !email.includes(".");
-        setEmailInvalid(emailIsInvalid);
-
-        // Password validation:
-        // must be >= 10 characters and contain at least 1 digit
-        const passwordIsInvalid = password.length < 10 || !/\d/.test(password); // \d checks for a digit
-        setPasswordInvalid(passwordIsInvalid);
-
-        // Confirm password validation
-        // must be the same as password
+        // Values validations
+        const emailIsInvalid = !emailValidation(email);
+        const passwordIsInvalid = !passwordValidation(password);
         const confirmPasswordIsInvalid = password !== confirmPassword;
+
+        setEmailInvalid(emailIsInvalid);
+        setPasswordInvalid(passwordIsInvalid);
         setConfirmPasswordInvalid(confirmPasswordIsInvalid);
 
         if (

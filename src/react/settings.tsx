@@ -6,6 +6,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import { useContext, useState } from "react";
 import { MdDeleteOutline } from "react-icons/md";
 import { AvocadoroContext } from "./store/AvocadoroContext";
+import { deleteAccount } from "./util/auth";
 
 export default function Settings() {
     const [removeView, setRemoveView] = useState(false);
@@ -13,15 +14,8 @@ export default function Settings() {
     const navigate = useNavigate();
     const { session, supabase } = useContext(AvocadoroContext);
 
-    const deleteAccount = async (): Promise<void> => {
-        const { error: rpcError } = await supabase.rpc("delete_user");
-
-        if (rpcError) {
-            console.error("Error deleting account via RPC:", rpcError.message);
-            return;
-        }
-
-        await supabase.auth.signOut();
+    const deleteAccountHandler = async (): Promise<void> => {
+        await deleteAccount(supabase);
         navigate("/", { replace: true });
     };
 
@@ -61,7 +55,7 @@ export default function Settings() {
                                 type="button"
                                 style="custom_button button_logo_dashboard"
                                 onClick={() => {
-                                    deleteAccount();
+                                    deleteAccountHandler();
                                 }}
                             />
                         </div>

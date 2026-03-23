@@ -13,6 +13,10 @@ import focusTimeSound from "./../sounds/focusTime.mp3";
 import { AvocadoroContext } from "../store/AvocadoroContext";
 import QuotePrinter from "./quotePrinter";
 import TimeDisplay from "./timeDisplay";
+import {
+    setTimerAndFinishTime,
+    unsetTimerAndFinishDate,
+} from "../util/timerAndFinishDate";
 
 type timerModeType = "focus" | "break";
 
@@ -50,43 +54,6 @@ function Timer({
         if (e.button === 3 || e.button === 4) {
             e.preventDefault();
         }
-    };
-
-    // Update database with timer_on = True and finish_date
-    const setTimerAndFinishTime = async (reset: boolean): Promise<void> => {
-        console.log("here")
-        let newFinishTime: string;
-
-        if (reset) {
-            // Reset the total seconds
-            newFinishTime = new Date(
-                Date.now() + focusTimer * 60 * 1000,
-            ).toISOString();
-        } else {
-            // Kepp the total seconds
-            newFinishTime = new Date(
-                Date.now() + totalSeconds * 1000,
-            ).toISOString();
-        }
-
-        const { data, error } = await supabase
-            .from("session_groups")
-            .update({
-                timer_on: true,
-                finish_time: newFinishTime,
-            })
-            .eq("id", sessionGroupId);
-    };
-
-    // Update database with timer_on = False and finish_date = null
-    const unsetTimerAndFinishDate = async (): Promise<void> => {
-        const { data, error } = await supabase
-            .from("session_groups")
-            .update({
-                timer_on: false,
-                finish_time: null,
-            })
-            .eq("id", sessionGroupId);
     };
 
     useEffect(() => {
@@ -160,7 +127,13 @@ function Timer({
                 endTimeRef.current = Date.now() + focusTimer * 60 * 1000;
                 const audio = new Audio(focusTimeSound);
                 audio.play().catch((e) => console.log("Playback failed:", e));
-                setTimerAndFinishTime(true);
+                setTimerAndFinishTime(
+                    supabase,
+                    true,
+                    focusTimer,
+                    totalSeconds,
+                    sessionGroupId as string,
+                );
             } else {
                 // Set break mode, reset the timer and play the sounds/vibrations
                 onComplete(focusTimer, endTimeRef.current);
@@ -169,7 +142,7 @@ function Timer({
                 endTimeRef.current = Date.now() + breakTimer * 60 * 1000;
                 const audio = new Audio(breakTimeSound);
                 audio.play().catch((e) => console.log("Playback failed:", e));
-                unsetTimerAndFinishDate();
+                unsetTimerAndFinishDate(supabase, sessionGroupId as string);
             }
 
             // Start the timer
@@ -193,7 +166,13 @@ function Timer({
         }, 1000);
 
         // Update database with timer_on = True and finish_date
-        setTimerAndFinishTime(false);
+        setTimerAndFinishTime(
+            supabase,
+            false,
+            focusTimer,
+            totalSeconds,
+            sessionGroupId as string,
+        );
     };
 
     // Stop/Pause timer
@@ -205,7 +184,7 @@ function Timer({
         }
 
         // Update database with timer_on = False and finish_date = null
-        unsetTimerAndFinishDate();
+        unsetTimerAndFinishDate(supabase, sessionGroupId as string);
     };
 
     const reset = (): void => {
@@ -219,7 +198,7 @@ function Timer({
         setMessage("");
 
         // Update database with timer_on = False and finish_date = null
-        unsetTimerAndFinishDate();
+        unsetTimerAndFinishDate(supabase, sessionGroupId as string);
     };
 
     // Reset the timer
@@ -248,7 +227,7 @@ function Timer({
             }, 1000);
 
             // Update database with timer_on = True and finish_date
-            setTimerAndFinishTime(true);
+            setTimerAndFinishTime(supabase, true, focusTimer, totalSeconds, sessionGroupId as string);
         }
     };
 
