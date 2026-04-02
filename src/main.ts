@@ -51,6 +51,7 @@ function handelTimerOn(event: Electron.IpcMainEvent, timerOn: boolean) {
         mainWindow.setClosable(false);
     } else if (mainWindow) {
         mainWindow.setClosable(true);
+        tray.setTitle("");
     }
 }
 
@@ -79,14 +80,13 @@ const createWindow = () => {
         mainWindow.loadFile(
             path.join(
                 __dirname,
-                `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`
-            )
+                `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`,
+            ),
         );
     }
 
     // Open the DevTools.
-    mainWindow.webContents.openDevTools({ mode: 'detach' });
-
+    mainWindow.webContents.openDevTools({ mode: "detach" });
 };
 
 // --- App Lifecycle and Deep Link Handling ---
@@ -143,7 +143,7 @@ if (!gotTheLock) {
         const finalPathString = path.join(
             app.isPackaged ? process.resourcesPath : app.getAppPath(),
             "assets",
-            "tray_icon.png"
+            "tray_icon.png",
         );
 
         console.log(finalPathString);
