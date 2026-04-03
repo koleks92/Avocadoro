@@ -11,6 +11,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import logo from "./images/Logo.png";
 import MotionDiv from "./components/motionDiv";
 import { emailValidation, passwordValidation } from "./util/validation";
+import { handleSignInWithApple, handleSignInWithGoogle } from "./util/auth";
 
 
 export default function Login() {
@@ -101,38 +102,6 @@ export default function Login() {
                 console.log("Signup success:", data);
                 setSignUpView(false);
             }
-        }
-    }
-
-    async function handleSignInWithGoogle(): Promise<void> {
-        const { error } = await supabase.auth.signInWithOAuth({
-            provider: "google",
-            options: {
-                redirectTo: "avocadoro://auth/callback",
-            },
-        });
-
-        if (error) {
-            console.error("Signup error:", error);
-            setMessage(error.message);
-
-            return;
-        }
-    }
-
-    async function handleSignInWithApple(): Promise<void> {
-        const { error } = await supabase.auth.signInWithOAuth({
-            provider: "apple",
-            options: {
-                redirectTo:
-                    "https://waahmuiugnnswpswwrah.supabase.co/auth/v1/callback",
-            },
-        });
-
-        if (error) {
-            console.error("Signup error:", error);
-            setMessage(error.message);
-            return;
         }
     }
 
@@ -350,7 +319,7 @@ export default function Login() {
                                             style="custom_button button_logo"
                                             label={<FaGoogle />}
                                             onClick={() =>
-                                                handleSignInWithGoogle()
+                                                handleSignInWithGoogle(supabase, setMessage)
                                             }
                                         />
                                         <Button
@@ -358,7 +327,7 @@ export default function Login() {
                                             style="custom_button button_logo"
                                             label={<SiApple />}
                                             onClick={() =>
-                                                handleSignInWithApple()
+                                                handleSignInWithApple(supabase, setMessage)
                                             }
                                         />
                                     </div>
