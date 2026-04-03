@@ -20,6 +20,21 @@ export const startTransfer = async (
         .eq("id", sessionGroupId);
 };
 
+// Cancel transfer
+export const cancelTransfer = async (
+    supabase: SupabaseClient,
+    sessionGroupId: string,
+): Promise<void> => {
+    const { data, error } = await supabase
+        .from("session_groups")
+        .update({
+            timer_on: false,
+            finish_time: null,
+            transfer_status: null
+        })
+        .eq("id", sessionGroupId);
+};
+
 // Update database with timer_on = False and finish_date = null
 export const finishTransfer = async (
     supabase: SupabaseClient,
