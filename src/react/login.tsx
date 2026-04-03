@@ -11,8 +11,12 @@ import { IoIosArrowBack } from "react-icons/io";
 import logo from "./images/Logo.png";
 import MotionDiv from "./components/motionDiv";
 import { emailValidation, passwordValidation } from "./util/validation";
-import { handleSignInWithApple, handleSignInWithGoogle } from "./util/auth";
-
+import {
+    handleSignInWithApple,
+    handleSignInWithGoogle,
+    signInHandler,
+    signUpHandler,
+} from "./util/auth";
 
 export default function Login() {
     const [email, setEmail] = useState<string>("");
@@ -26,8 +30,15 @@ export default function Login() {
         useState<boolean>(false);
     const [emailInvalid, setEmailInvalid] = useState<boolean>(false);
 
-    const { session, supabase, setSession, message, setMessage, authLoaded, setAuthLoaded} =
-        useContext(AvocadoroContext);
+    const {
+        session,
+        supabase,
+        setSession,
+        message,
+        setMessage,
+        authLoaded,
+        setAuthLoaded,
+    } = useContext(AvocadoroContext);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -36,74 +47,6 @@ export default function Login() {
             navigate("/dashboard");
         }
     }, [authLoaded, session]);
-
-    async function signInHandler(e: React.FormEvent): Promise<void> {
-        e.preventDefault();
-
-        setMessage("");
-
-        // Values validations
-        const emailIsInvalid = !emailValidation(email);
-        const passwordIsInvalid = !passwordValidation(password);
-
-        setEmailInvalid(emailIsInvalid);
-        setPasswordInvalid(passwordIsInvalid);
-
-        if (!emailIsInvalid && !passwordIsInvalid) {
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email: email,
-                password: password,
-            });
-
-            if (error) {
-                console.error("Signin error:", error);
-                setMessage(error.message);
-                return;
-            }
-
-            if (data) {
-                console.log("Signin success:", data);
-            }
-        }
-    }
-
-    async function signUpHandler(e: React.FormEvent): Promise<void> {
-        e.preventDefault();
-
-        setMessage("");
-
-        // Values validations
-        const emailIsInvalid = !emailValidation(email);
-        const passwordIsInvalid = !passwordValidation(password);
-        const confirmPasswordIsInvalid = password !== confirmPassword;
-
-        setEmailInvalid(emailIsInvalid);
-        setPasswordInvalid(passwordIsInvalid);
-        setConfirmPasswordInvalid(confirmPasswordIsInvalid);
-
-        if (
-            !emailIsInvalid &&
-            !passwordIsInvalid &&
-            !confirmPasswordIsInvalid
-        ) {
-            const { data, error } = await supabase.auth.signUp({
-                email: email.trim(),
-                password: password.trim(),
-            });
-
-            if (error) {
-                console.error("Signup error:", error);
-                setMessage(error.message);
-
-                return;
-            }
-
-            if (data) {
-                console.log("Signup success:", data);
-                setSignUpView(false);
-            }
-        }
-    }
 
     function clearMessages(): void {
         setMessage("");
@@ -156,7 +99,7 @@ export default function Login() {
                     <div className="login_main_div">
                         {signUpView ? (
                             // Sign Up View
-                            <form onSubmit={signUpHandler}>
+                            <div>
                                 <div className="center_column_div">
                                     <label
                                         htmlFor="email"
@@ -237,14 +180,27 @@ export default function Login() {
                                 <div className="center_column_div">
                                     <Button
                                         label="Sign Up"
-                                        type="submit"
+                                        type="button"
                                         style="custom_button"
+                                        onClick={() =>
+                                            signUpHandler(
+                                                supabase,
+                                                setMessage,
+                                                email,
+                                                password,
+                                                confirmPassword,
+                                                setEmailInvalid,
+                                                setPasswordInvalid,
+                                                setConfirmPasswordInvalid,
+                                                setSignUpView,
+                                            )
+                                        }
                                     />
                                 </div>
-                            </form>
+                            </div>
                         ) : (
                             // Sign In View
-                            <form onSubmit={signInHandler}>
+                            <div>
                                 <div className="center_column_div">
                                     <label
                                         htmlFor="email"
@@ -310,8 +266,18 @@ export default function Login() {
                                 <div className="center_column_div">
                                     <Button
                                         label="Log in"
-                                        type="submit"
+                                        type="button"
                                         style="custom_button"
+                                        onClick={() =>
+                                            signInHandler(
+                                                supabase,
+                                                setMessage,
+                                                email,
+                                                password,
+                                                setEmailInvalid,
+                                                setPasswordInvalid,
+                                            )
+                                        }
                                     />
                                     <div className="center_row_div">
                                         <Button
@@ -319,7 +285,10 @@ export default function Login() {
                                             style="custom_button button_logo"
                                             label={<FaGoogle />}
                                             onClick={() =>
-                                                handleSignInWithGoogle(supabase, setMessage)
+                                                handleSignInWithGoogle(
+                                                    supabase,
+                                                    setMessage,
+                                                )
                                             }
                                         />
                                         <Button
@@ -327,7 +296,10 @@ export default function Login() {
                                             style="custom_button button_logo"
                                             label={<SiApple />}
                                             onClick={() =>
-                                                handleSignInWithApple(supabase, setMessage)
+                                                handleSignInWithApple(
+                                                    supabase,
+                                                    setMessage,
+                                                )
                                             }
                                         />
                                     </div>
@@ -353,7 +325,7 @@ export default function Login() {
                                         }}
                                     />
                                 </div>
-                            </form>
+                            </div>
                         )}
                     </div>
                 </div>
