@@ -13,37 +13,36 @@ import focusTimeSound from "./../sounds/focusTime.mp3";
 import { AvocadoroContext } from "../store/AvocadoroContext";
 import QuotePrinter from "./quotePrinter";
 import TimeDisplay from "./timeDisplay";
-import {
-    setTimerAndFinishTime,
-    unsetTimerAndFinishDate,
-} from "../util/timerAndFinishDate";
 
-type timerModeType = "focus" | "break";
+// !!!
+// !!! When sending data it recives wrong (starts timer from the start not form the specific time !!!)
+
 
 type TimerProps = {
     onComplete?: (minutes: number, finishTime: number) => void;
     focusTimer?: number;
     breakTimer?: number;
-    timerOnSupabase?: boolean;
-    finishTimeSupabase?: string;
-    sessionGroupId?: string;
+    supabaseId: string;
+    supabaseFinishTime?: string;
+    onTotalSecondsChange?: (seconds: number) => void;
+    transferRecived?: boolean;
 };
 
 function Timer({
     onComplete,
     focusTimer,
     breakTimer,
-    timerOnSupabase,
-    finishTimeSupabase,
-    sessionGroupId,
+    supabaseId,
+    supabaseFinishTime,
+    onTotalSecondsChange,
+    transferRecived,
 }: TimerProps) {
-    const [timerMode, setTimerMode] = useState<timerModeType>("focus");
     const [totalSeconds, setTotalSeconds] = useState<number>(focusTimer * 60);
 
     const timerRef = useRef<number | null>(null);
     const endTimeRef = useRef<number | null>(null);
 
-    const { timerOn, setTimerOn, supabase, message, setMessage } =
+    const { timerOn, setTimerOn, supabase, message, setMessage, timerMode, setTimerMode } =
         useContext(AvocadoroContext);
 
     const minutes = Math.floor(totalSeconds / 60);
@@ -57,27 +56,31 @@ function Timer({
     };
 
     useEffect(() => {
+        if (transferRecived) reset();
+    }, [transferRecived]);
+
+    useEffect(() => {
         // Check if timer is running on another device and start the timer
-        if (timerOnSupabase && finishTimeSupabase) {
-            console.log("running");
-            const finishTime = new Date(finishTimeSupabase + "Z").getTime();
+        if (supabaseFinishTime && supabaseId) {
+            const finishTime = new Date(supabaseFinishTime + "Z").getTime();
             const remaining = Math.ceil((finishTime - Date.now()) / 1000);
 
             if (remaining > 0) {
                 setTotalSeconds(remaining);
                 setTimerOn(true);
-                endTimeRef.current = finishTime;
+                endTimeRef.current = finishTime; // set AFTER start so it doesn't get overwritten
                 timerRef.current = window.setInterval(() => {
-                    setTotalSeconds((prev) => prev - 1);
+                    if (endTimeRef.current === null) return;
+                    const remaining = Math.ceil(
+                        (endTimeRef.current - Date.now()) / 1000,
+                    );
+                    setTotalSeconds(Math.max(0, remaining));
                 }, 1000);
             }
-
-            setMessage("Remeber to reset timer on another device!");
-            setTimeout(() => {
-                setMessage("");
-            }, 15000);
         }
+    }, [supabaseFinishTime]);
 
+    useEffect(() => {
         // !!! Testing only, allows to change the timer !!!
         (window as any).skipForward = (secs: number) => {
             setTotalSeconds(secs);
@@ -113,6 +116,9 @@ function Timer({
             window.electronAPI.setTimer("B " + timerString);
         }
 
+        // Pass to parent component
+        onTotalSecondsChange?.(totalSeconds);
+
         // Timer functions
         if (totalSeconds === 0) {
             if (timerRef.current !== null) {
@@ -127,13 +133,6 @@ function Timer({
                 endTimeRef.current = Date.now() + focusTimer * 60 * 1000;
                 const audio = new Audio(focusTimeSound);
                 audio.play().catch((e) => console.log("Playback failed:", e));
-                setTimerAndFinishTime(
-                    supabase,
-                    true,
-                    focusTimer,
-                    totalSeconds,
-                    sessionGroupId as string,
-                );
             } else {
                 // Set break mode, reset the timer and play the sounds/vibrations
                 onComplete(focusTimer, endTimeRef.current);
@@ -142,7 +141,6 @@ function Timer({
                 endTimeRef.current = Date.now() + breakTimer * 60 * 1000;
                 const audio = new Audio(breakTimeSound);
                 audio.play().catch((e) => console.log("Playback failed:", e));
-                unsetTimerAndFinishDate(supabase, sessionGroupId as string);
             }
 
             // Start the timer
@@ -161,18 +159,14 @@ function Timer({
         setMessage("");
         if (timerRef.current !== null) return; // prevent multiple intervals
         setTimerOn(true);
+        endTimeRef.current = Date.now() + totalSeconds * 1000;
         timerRef.current = window.setInterval(() => {
-            setTotalSeconds((prev) => prev - 1);
+            if (endTimeRef.current === null) return;
+            const remaining = Math.ceil(
+                (endTimeRef.current - Date.now()) / 1000,
+            );
+            setTotalSeconds(Math.max(0, remaining));
         }, 1000);
-
-        // Update database with timer_on = True and finish_date
-        setTimerAndFinishTime(
-            supabase,
-            false,
-            focusTimer,
-            totalSeconds,
-            sessionGroupId as string,
-        );
     };
 
     // Stop/Pause timer
@@ -182,9 +176,6 @@ function Timer({
             clearInterval(timerRef.current);
             timerRef.current = null;
         }
-
-        // Update database with timer_on = False and finish_date = null
-        unsetTimerAndFinishDate(supabase, sessionGroupId as string);
     };
 
     const reset = (): void => {
@@ -196,9 +187,6 @@ function Timer({
         setTimerOn(false);
         setTimerMode("focus");
         setMessage("");
-
-        // Update database with timer_on = False and finish_date = null
-        unsetTimerAndFinishDate(supabase, sessionGroupId as string);
     };
 
     // Reset the timer
@@ -225,9 +213,6 @@ function Timer({
                 );
                 setTotalSeconds(Math.max(0, remaining));
             }, 1000);
-
-            // Update database with timer_on = True and finish_date
-            setTimerAndFinishTime(supabase, true, focusTimer, totalSeconds, sessionGroupId as string);
         }
     };
 

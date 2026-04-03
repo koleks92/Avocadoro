@@ -1,20 +1,36 @@
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import Timer from "./components/timer";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import { AvocadoroContext } from "./store/AvocadoroContext";
 import Button from "./components/button";
 import { IoIosArrowBack, IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { IoPencil } from "react-icons/io5";
+import { MdTransferWithinAStation } from "react-icons/md";
 import AvocadoroPrint from "./components/avocadoroPrint";
 import logoNoSpace from "./images/logo_nospace.png";
 import MotionDiv from "./components/motionDiv";
+import { Modal } from "@mui/material";
+import { cancelTransfer, finishTransfer, startTransfer } from "./util/startFinishTransfer";
+
+type TransferTypes = "Recive" | "Send";
 
 export default function Group() {
     const { id } = useParams<{ id: string }>();
     const { state } = useLocation();
     const navigate = useNavigate();
 
-    const [loading, setLoading] = useState<boolean>(true);
+    // Modal
+    const [modalVisible, setModalVisible] = useState<boolean>(false);
+    const handleClose = () => setModalVisible(false);
+    const [transferStatus, setTransferStatus] =
+        useState<TransferTypes>("Recive");
+    const [transferStatusText, setTransferStatusText] = useState<string>("");
+
+    // Timer state from supabase
+    const [supabaseFinishTime, setSupabaseFinishTime] = useState<string>("");
+
+    // Timer state
+    const [totalSeconds, setTotalSeconds] = useState<number>(0);
 
     const [timerView, setTimerView] = useState<boolean>(true);
 
@@ -24,12 +40,21 @@ export default function Group() {
     const [avocadoroAmount, setAvocadoroAmount] = useState<number>(0);
     const [totalTime, setTotalTime] = useState<string>("");
 
-    // Timer on state
-    const [timerOnSupabase, setTimerOnSupabase] = useState<boolean>(false);
-    const [finishTimeSupabase, setFinishTimeSupabase] = useState<string>("");
+    // Supabase realtime database chanell
+    const transferChannelRef = useRef<any>(null);
 
-    const { session, supabase, timerOn, setTimerOn, message, setMessage } =
-        useContext(AvocadoroContext);
+    // Transfer status
+    const [transferRecived, setTransferRecived] = useState<boolean>(false);
+
+    const {
+        session,
+        supabase,
+        timerOn,
+        setTimerOn,
+        message,
+        setMessage,
+        timerMode,
+    } = useContext(AvocadoroContext);
 
     function convertTime(): void {
         const hours = Math.floor(totalMinutes / 60);
@@ -43,6 +68,18 @@ export default function Group() {
     }
 
     useEffect(() => {
+        if (!timerOn) {
+            setTransferStatus("Recive");
+            setTransferStatusText("Ready to recive timer!");
+        }
+
+        if (timerOn) {
+            setTransferStatus("Send");
+            setTransferStatusText("Ready to send timer!");
+        }
+    }, [modalVisible]);
+
+    useEffect(() => {
         const checkTimer = async (): Promise<void> => {
             const { data, error } = await supabase
                 .from("session_groups")
@@ -51,11 +88,8 @@ export default function Group() {
                 .single();
 
             if (data?.timer_on) {
-                setTimerOnSupabase(data.timer_on);
-                setFinishTimeSupabase(data.finish_time);
+                setModalVisible(true);
             }
-
-            setLoading(false);
         };
 
         checkTimer();
@@ -88,6 +122,72 @@ export default function Group() {
         return () => clearTimeout(timeout);
     }, [timerView]);
 
+    // Transfer function
+    const transferTimer = async (): Promise<void> => {
+        if (transferStatus === "Recive") {
+            const { data, error } = await supabase
+                .from("session_groups")
+                .select("timer_on, finish_time")
+                .eq("id", id)
+                .single();
+
+            if (data?.timer_on) {
+                setSupabaseFinishTime(data.finish_time);
+                finishTransfer(supabase, id);
+                setModalVisible(false);
+            } else {
+                setTransferStatusText("Transfer failed!\n Try again!");
+            }
+        }
+
+        if (transferStatus === "Send") {
+            if (timerMode === "focus") {
+                startTransfer(supabase, totalSeconds, id);
+                setTransferStatusText("Sending...");
+
+                // Start listening
+                transferChannelRef.current = supabase
+                    .channel("transfer-channel")
+                    .on(
+                        "postgres_changes",
+                        {
+                            event: "UPDATE",
+                            schema: "public",
+                            table: "session_groups",
+                            filter: `id=eq.${id}`,
+                        },
+                        (payload) => {
+                            if (payload.new.transfer_status === "recived") {
+                                setModalVisible(false);
+                                stopListening();
+                                setTransferRecived(true);
+                                setTimeout(() => {
+                                    setTransferRecived(false);
+                                }, 5000);
+                            }
+                        },
+                    )
+                    .subscribe();
+
+                // Stop after 30 seconds
+                setTimeout(() => {
+                    stopListening();
+                    cancelTransfer(supabase, id);
+                    setTransferStatusText("Transfer failed!\nTry again!");
+                }, 30000);
+            } else {
+                setTransferStatusText("Cannot transfer break!")
+            }
+        }
+    };
+
+    const stopListening = () => {
+        if (transferChannelRef.current) {
+            supabase.removeChannel(transferChannelRef.current);
+            transferChannelRef.current = null;
+        }
+    };
+
     async function onCompleteHandler(
         minutes: number,
         finishTime: number,
@@ -109,7 +209,9 @@ export default function Group() {
 
         if (error) {
             // setMessage(error.message);
-            setMessage("Cannot save data.\n Are you running a timer on another device ?");
+            setMessage(
+                "Cannot save data.\n Are you running a timer on another device ?",
+            );
             setTimeout(() => {
                 setMessage("");
             }, 15000);
@@ -134,12 +236,30 @@ export default function Group() {
         }
     }
 
-    if (loading) {
-        return null;
-    }
-
     return (
         <MotionDiv>
+            <Modal
+                open={modalVisible}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <div className="modal_root" onClick={handleClose}>
+                    <div
+                        className="modal_div"
+                        onClick={(e) => e.stopPropagation()} // prevent clicks inside from closing
+                    >
+                        <span className="modal_title">Transfer timer</span>
+                        <Button
+                            label={transferStatus}
+                            onClick={() => transferTimer()}
+                            type="button"
+                            style="custom_button"
+                        />
+                        <span className="modal_span">{transferStatusText}</span>
+                    </div>
+                </div>
+            </Modal>
             <div className="group_root">
                 <div className="group_logo_div">
                     <div className="group_back_button_div">
@@ -183,7 +303,6 @@ export default function Group() {
                                         Total focus time
                                     </span>
                                     <span className="group_second_div_time">
-                                        {" "}
                                         {totalTime}
                                     </span>
                                 </div>
@@ -191,12 +310,12 @@ export default function Group() {
                                     <img
                                         src={logoNoSpace}
                                         className="avocadoro_print_image"
-                                    />{" "}
+                                    />
                                     - {state.focus_timer}m
                                 </div>
                             </div>
                             <AvocadoroPrint amount={avocadoroAmount} />
-                            {message}
+                            <span className="message_span">{message}</span>
                         </div>
 
                         <div className="group_button_div">
@@ -226,13 +345,26 @@ export default function Group() {
                                 onComplete={onCompleteHandler}
                                 focusTimer={state.focus_timer}
                                 breakTimer={state.break_timer}
-                                sessionGroupId={state.id}
-                                timerOnSupabase={timerOnSupabase}
-                                finishTimeSupabase={finishTimeSupabase}
+                                supabaseId={state.id}
+                                supabaseFinishTime={supabaseFinishTime}
+                                onTotalSecondsChange={(seconds) =>
+                                    setTotalSeconds(seconds)
+                                }
+                                transferRecived={transferRecived}
                             />
                             <span className="message_span">{message}</span>
                         </div>
                     </div>
+                </div>
+                <div className="dashboard_bottom_div">
+                    <Button
+                        onClick={() => {
+                            setModalVisible(true);
+                        }}
+                        type="button"
+                        style="custom_button button_logo_group edit_button"
+                        label={<MdTransferWithinAStation />}
+                    />
                 </div>
             </div>
         </MotionDiv>
