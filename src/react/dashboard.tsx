@@ -45,7 +45,7 @@ export default function Dashboard() {
                     timer_on,
                     finish_time,
                     sessions ( duration_minutes )
-                    `
+                    `,
                 )
                 .eq("user_id", session.user.id);
 
@@ -56,7 +56,7 @@ export default function Dashboard() {
                     ...group,
                     total_minutes: group.sessions.reduce(
                         (sum, s) => sum + s.duration_minutes,
-                        0
+                        0,
                     ),
                 }));
                 setSessionGroups(groupsWithTotals);

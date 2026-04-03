@@ -1,5 +1,6 @@
 import { ReactNode, useState, useEffect, createContext } from "react";
 import { createClient, SupabaseClient, Session } from "@supabase/supabase-js";
+import { JwtPayload } from "@supabase/supabase-js";
 
 type timerModeType = "focus" | "break";
 
@@ -14,6 +15,8 @@ type AvocadoroContextType = {
     setMessage: React.Dispatch<React.SetStateAction<string>>;
     timerMode: timerModeType;
     setTimerMode: React.Dispatch<React.SetStateAction<timerModeType>>;
+    authLoaded: boolean;
+    setAuthLoaded: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 // Create the context (default: null so we can handle initialization)
@@ -38,17 +41,62 @@ export function AvocadoroProvider({ children }: AvocadoroProviderProps) {
     const [timerOn, setTimerOn] = useState<boolean>(false);
     const [message, setMessage] = useState<string>("");
     const [timerMode, setTimerMode] = useState<timerModeType>("focus");
+    const [authLoaded, setAuthLoaded] = useState<boolean>(false);
 
     useEffect(() => {
-        supabase.auth
-            .getSession()
-            .then(({ data: { session } }) => setSession(session));
+        // 1. Get initial session on mount
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setSession(session);
+            setAuthLoaded(true);
+        });
+
+        // 2. Listen for auth changes (handles email/password login, logout, token refresh)
         const {
             data: { subscription },
-        } = supabase.auth.onAuthStateChange((_event, session) =>
-            setSession(session),
-        );
-        return () => subscription.unsubscribe();
+        } = supabase.auth.onAuthStateChange((_event, session) => {
+            setSession(session);
+            setAuthLoaded(true);
+        });
+
+        // 3. Handle Electron deep link OAuth redirects
+        let cleanupDeepLink: (() => void) | null = null;
+
+        if (window.electronAPI?.onDeepLinkUrl) {
+            const deepLinkCleanup = window.electronAPI.onDeepLinkUrl(
+                (url: string) => {
+                    try {
+                        const urlObject = new URL(url);
+                        const hashParams = new URLSearchParams(
+                            urlObject.hash.substring(1),
+                        );
+
+                        const access_token = hashParams.get("access_token");
+                        const refresh_token = hashParams.get("refresh_token");
+
+                        if (access_token && refresh_token) {
+                            // setSession triggers onAuthStateChange above automatically
+                            // so no need to manually setSession here
+                            supabase.auth.setSession({
+                                access_token,
+                                refresh_token,
+                            });
+                        } else {
+                            console.error("Tokens not found in deep link URL");
+                        }
+                    } catch (error) {
+                        console.error("Error processing deep link URL:", error);
+                    }
+                },
+            );
+
+            cleanupDeepLink = () => deepLinkCleanup.listener.unsubscribe();
+            window.electronAPI.setTimer("");
+        }
+
+        return () => {
+            subscription.unsubscribe();
+            cleanupDeepLink?.();
+        };
     }, []);
 
     return (
@@ -62,7 +110,9 @@ export function AvocadoroProvider({ children }: AvocadoroProviderProps) {
                 message,
                 setMessage,
                 timerMode,
-                setTimerMode
+                setTimerMode,
+                authLoaded,
+                setAuthLoaded,
             }}
         >
             {children}

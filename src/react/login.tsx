@@ -5,14 +5,13 @@ import { useNavigate } from "react-router-dom";
 import { AvocadoroContext } from "./store/AvocadoroContext";
 import Input from "./components/input";
 import Button from "./components/button";
-import Loading from "./components/loading";
 import { FaGoogle, FaApple } from "react-icons/fa";
 import { SiApple } from "react-icons/si";
 import { IoIosArrowBack } from "react-icons/io";
 import logo from "./images/Logo.png";
-import logoText from "./images/logo_text.png";
 import MotionDiv from "./components/motionDiv";
 import { emailValidation, passwordValidation } from "./util/validation";
+
 
 export default function Login() {
     const [email, setEmail] = useState<string>("");
@@ -26,91 +25,16 @@ export default function Login() {
         useState<boolean>(false);
     const [emailInvalid, setEmailInvalid] = useState<boolean>(false);
 
-    const { session, supabase, setSession, message, setMessage } =
+    const { session, supabase, setSession, message, setMessage, authLoaded, setAuthLoaded} =
         useContext(AvocadoroContext);
     const navigate = useNavigate();
-
-    const [authLoaded, setAuthLoaded] = useState(false);
-
-    useEffect(() => {
-        // Initial Session Load
-        supabase.auth.getSession().then(({ data }) => {
-            setSession(data.session);
-            setAuthLoaded(true);
-        });
-
-        // Supabase Real-time Listener
-        const { data: listener } = supabase.auth.onAuthStateChange(
-            (_event, session) => {
-                setSession(session);
-            },
-        );
-
-        // Array to hold all cleanup functions
-        const cleanupFns: (() => void)[] = [
-            () => listener.subscription.unsubscribe(),
-        ];
-
-        if (window.electronAPI && window.electronAPI.onDeepLinkUrl) {
-            const cleanupDeepLink = window.electronAPI.onDeepLinkUrl(
-                (url: string) => {
-                    try {
-                        const urlObject = new URL(url);
-                        const hashParams = new URLSearchParams(
-                            urlObject.hash.substring(1),
-                        );
-
-                        const access_token = hashParams.get("access_token");
-                        const refresh_token = hashParams.get("refresh_token");
-
-                        if (access_token && refresh_token) {
-                            supabase.auth
-                                .setSession({
-                                    access_token: access_token,
-                                    refresh_token: refresh_token,
-                                })
-                                .then(({ data }) => {
-                                    if (data.session) {
-                                        setSession(data.session);
-                                        setAuthLoaded(true);
-
-                                        // Clean the path
-                                        if (
-                                            window.history &&
-                                            window.history.replaceState
-                                        ) {
-                                            window.history.replaceState(
-                                                null,
-                                                "",
-                                                "/#/",
-                                            );
-                                        }
-                                    }
-                                });
-                        } else {
-                            console.error("Tokens not found in URL hash.");
-                        }
-                    } catch (error) {
-                        console.error("Error processing deep link URL:", error);
-                    }
-                },
-            );
-
-            cleanupFns.push(cleanupDeepLink);
-            // IPC call
-            window.electronAPI.setTimer("");
-        }
-
-        // Return a function that runs ALL cleanup functions.
-        return () => cleanupFns.forEach((fn) => fn());
-    }, []);
 
     useEffect(() => {
         if (!authLoaded) return; // prevent early redirect flicker
         if (session) {
             navigate("/dashboard");
         }
-    }, [session, authLoaded, navigate]);
+    }, [authLoaded, session]);
 
     async function signInHandler(e: React.FormEvent): Promise<void> {
         e.preventDefault();
