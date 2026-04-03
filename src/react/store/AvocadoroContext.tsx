@@ -1,6 +1,5 @@
 import { ReactNode, useState, useEffect, createContext } from "react";
 import { createClient, SupabaseClient, Session } from "@supabase/supabase-js";
-import { JwtPayload } from "@supabase/supabase-js";
 
 type timerModeType = "focus" | "break";
 
@@ -43,6 +42,7 @@ export function AvocadoroProvider({ children }: AvocadoroProviderProps) {
     const [timerMode, setTimerMode] = useState<timerModeType>("focus");
     const [authLoaded, setAuthLoaded] = useState<boolean>(false);
 
+    // Set up Supabase Auth
     useEffect(() => {
         // 1. Get initial session on mount
         supabase.auth.getSession().then(({ data: { session } }) => {

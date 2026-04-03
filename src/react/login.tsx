@@ -10,7 +10,6 @@ import { SiApple } from "react-icons/si";
 import { IoIosArrowBack } from "react-icons/io";
 import logo from "./images/Logo.png";
 import MotionDiv from "./components/motionDiv";
-import { emailValidation, passwordValidation } from "./util/validation";
 import {
     handleSignInWithApple,
     handleSignInWithGoogle,
@@ -30,15 +29,8 @@ export default function Login() {
         useState<boolean>(false);
     const [emailInvalid, setEmailInvalid] = useState<boolean>(false);
 
-    const {
-        session,
-        supabase,
-        setSession,
-        message,
-        setMessage,
-        authLoaded,
-        setAuthLoaded,
-    } = useContext(AvocadoroContext);
+    const { session, supabase, message, setMessage, authLoaded } =
+        useContext(AvocadoroContext);
     const navigate = useNavigate();
 
     useEffect(() => {
