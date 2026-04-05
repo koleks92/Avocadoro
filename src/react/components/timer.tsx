@@ -13,7 +13,8 @@ import focusTimeSound from "./../sounds/focusTime.mp3";
 import { AvocadoroContext } from "../store/AvocadoroContext";
 import QuotePrinter from "./quotePrinter";
 import TimeDisplay from "./timeDisplay";
-import { useBlockMouse } from "../hooks/useTimer";
+import { useBlockMouse } from "../hooks/useBlockMouse";
+import { useTimer } from "../hooks/useTimer";
 
 type TimerProps = {
     onComplete?: (minutes: number, finishTime: number) => void;
@@ -34,19 +35,38 @@ function Timer({
     onTotalSecondsChange,
     transferRecived,
 }: TimerProps) {
-    const [totalSeconds, setTotalSeconds] = useState<number>(focusTimer * 60);
-
     const timerRef = useRef<number | null>(null);
     const endTimeRef = useRef<number | null>(null);
 
-    const { timerOn, setTimerOn, supabase, message, setMessage, timerMode, setTimerMode } =
-        useContext(AvocadoroContext);
-
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
+    // Avocadoro Context
+    const {
+        timerOn,
+        setTimerOn,
+        supabase,
+        message,
+        setMessage,
+        timerMode,
+        setTimerMode,
+    } = useContext(AvocadoroContext);
 
     // Block mouse back button when timer is on
     useBlockMouse(timerOn);
+
+    // Timer hooks
+    const { start, stop, reset, skip, totalSeconds, setTotalSeconds } = useTimer(
+        setMessage,
+        timerMode,
+        setTimerMode,
+        timerOn,
+        setTimerOn,
+        focusTimer,
+        breakTimer,
+        onComplete,
+        onTotalSecondsChange,
+    );
+
+    // Pass to parent component
+    onTotalSecondsChange?.(totalSeconds);
 
     useEffect(() => {
         if (transferRecived) reset();
@@ -84,118 +104,6 @@ function Timer({
             delete (window as any).skipForward;
         };
     }, []);
-
-    useEffect(() => {
-        // If timer is off
-        if (timerRef.current === null) return;
-
-        // Electron context sharing
-        const timerString = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-        if (timerMode === "focus") {
-            window.electronAPI.setTimer("F " + timerString);
-        } else {
-            window.electronAPI.setTimer("B " + timerString);
-        }
-
-        // Pass to parent component
-        onTotalSecondsChange?.(totalSeconds);
-
-        // Timer functions
-        if (totalSeconds === 0) {
-            if (timerRef.current !== null) {
-                clearInterval(timerRef.current);
-                timerRef.current = null;
-            }
-
-            if (timerMode === "break") {
-                // Set focus mode, reset the timer and play the sounds/vibrations
-                setTimerMode("focus");
-                setTotalSeconds(focusTimer * 60);
-                endTimeRef.current = Date.now() + focusTimer * 60 * 1000;
-                const audio = new Audio(focusTimeSound);
-                audio.play().catch((e) => console.log("Playback failed:", e));
-            } else {
-                // Set break mode, reset the timer and play the sounds/vibrations
-                onComplete(focusTimer, endTimeRef.current);
-                setTimerMode("break");
-                setTotalSeconds(breakTimer * 60);
-                endTimeRef.current = Date.now() + breakTimer * 60 * 1000;
-                const audio = new Audio(breakTimeSound);
-                audio.play().catch((e) => console.log("Playback failed:", e));
-            }
-
-            // Start the timer
-            timerRef.current = window.setInterval(() => {
-                if (endTimeRef.current === null) return;
-                const remaining = Math.ceil(
-                    (endTimeRef.current - Date.now()) / 1000,
-                );
-                setTotalSeconds(Math.max(0, remaining));
-            }, 1000);
-        }
-    }, [totalSeconds]);
-
-    // Start timer function
-    const start = (): void => {
-        setMessage("");
-        if (timerRef.current !== null) return; // prevent multiple intervals
-        setTimerOn(true);
-        endTimeRef.current = Date.now() + totalSeconds * 1000;
-        timerRef.current = window.setInterval(() => {
-            if (endTimeRef.current === null) return;
-            const remaining = Math.ceil(
-                (endTimeRef.current - Date.now()) / 1000,
-            );
-            setTotalSeconds(Math.max(0, remaining));
-        }, 1000);
-    };
-
-    // Stop/Pause timer
-    const stop = (): void => {
-        setMessage("");
-        if (timerRef.current !== null) {
-            clearInterval(timerRef.current);
-            timerRef.current = null;
-        }
-    };
-
-    const reset = (): void => {
-        if (timerRef.current !== null) {
-            clearInterval(timerRef.current);
-        }
-        timerRef.current = null;
-        setTotalSeconds(focusTimer * 60);
-        setTimerOn(false);
-        setTimerMode("focus");
-        setMessage("");
-    };
-
-    // Reset the timer
-    const skip = async (): Promise<void> => {
-        // Clear existing interval if running
-        if (timerRef.current !== null) {
-            clearInterval(timerRef.current);
-            timerRef.current = null;
-        }
-
-        // Reset to focus mode
-        setTimerMode("focus");
-        setTotalSeconds(focusTimer * 60);
-        setMessage("");
-
-        // Restart timer if it was running
-        if (timerOn) {
-            endTimeRef.current = Date.now() + focusTimer * 60 * 1000;
-
-            timerRef.current = window.setInterval(() => {
-                if (endTimeRef.current === null) return;
-                const remaining = Math.ceil(
-                    (endTimeRef.current - Date.now()) / 1000,
-                );
-                setTotalSeconds(Math.max(0, remaining));
-            }, 1000);
-        }
-    };
 
     return (
         <div className="timer_root">
