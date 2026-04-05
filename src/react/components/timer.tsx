@@ -13,16 +13,13 @@ import focusTimeSound from "./../sounds/focusTime.mp3";
 import { AvocadoroContext } from "../store/AvocadoroContext";
 import QuotePrinter from "./quotePrinter";
 import TimeDisplay from "./timeDisplay";
-
-// !!!
-// !!! When sending data it recives wrong (starts timer from the start not form the specific time !!!)
-
+import { useBlockMouse } from "../hooks/useTimer";
 
 type TimerProps = {
     onComplete?: (minutes: number, finishTime: number) => void;
-    focusTimer?: number;
-    breakTimer?: number;
-    supabaseId: string;
+    focusTimer: number;
+    breakTimer: number;
+    supabaseId?: string;
     supabaseFinishTime?: string;
     onTotalSecondsChange?: (seconds: number) => void;
     transferRecived?: boolean;
@@ -48,12 +45,8 @@ function Timer({
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
 
-    // Block mouse buttons function
-    const blockMouseBackForward = (e: MouseEvent) => {
-        if (e.button === 3 || e.button === 4) {
-            e.preventDefault();
-        }
-    };
+    // Block mouse back button when timer is on
+    useBlockMouse(timerOn);
 
     useEffect(() => {
         if (transferRecived) reset();
@@ -91,18 +84,6 @@ function Timer({
             delete (window as any).skipForward;
         };
     }, []);
-
-    useEffect(() => {
-        window.electronAPI.setTimerOn(timerOn);
-
-        if (timerOn) {
-            window.addEventListener("mouseup", blockMouseBackForward);
-        }
-
-        return () => {
-            window.removeEventListener("mouseup", blockMouseBackForward);
-        };
-    }, [timerOn]);
 
     useEffect(() => {
         // If timer is off
