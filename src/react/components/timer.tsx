@@ -35,9 +35,6 @@ function Timer({
     onTotalSecondsChange,
     transferRecived,
 }: TimerProps) {
-    const timerRef = useRef<number | null>(null);
-    const endTimeRef = useRef<number | null>(null);
-
     // Avocadoro Context
     const {
         timerOn,
@@ -53,7 +50,7 @@ function Timer({
     useBlockMouse(timerOn);
 
     // Timer hooks
-    const { start, stop, reset, skip, totalSeconds, setTotalSeconds } = useTimer(
+    const { start, stop, reset, skip, totalSeconds, setTotalSeconds, endTimeRef, timerRef } = useTimer(
         setMessage,
         timerMode,
         setTimerMode,
@@ -68,6 +65,7 @@ function Timer({
     // Pass to parent component
     onTotalSecondsChange?.(totalSeconds);
 
+    // Transfer timer
     useEffect(() => {
         if (transferRecived) reset();
     }, [transferRecived]);
@@ -93,8 +91,8 @@ function Timer({
         }
     }, [supabaseFinishTime]);
 
+    // !!! Testing only, allows to change the timer !!!
     useEffect(() => {
-        // !!! Testing only, allows to change the timer !!!
         (window as any).skipForward = (secs: number) => {
             setTotalSeconds(secs);
         };

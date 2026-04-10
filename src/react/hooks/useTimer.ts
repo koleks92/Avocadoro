@@ -86,6 +86,7 @@ export function useTimer(
         }, 1000);
     };
 
+
     // Stop/Pause timer
     const stop = (): void => {
         setMessage("");
@@ -139,6 +140,8 @@ export function useTimer(
         reset,
         skip,
         totalSeconds,
-        setTotalSeconds
+        setTotalSeconds,
+        endTimeRef,
+        timerRef
     };
 }
