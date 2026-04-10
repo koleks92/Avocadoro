@@ -126,7 +126,6 @@ if (!gotTheLock) {
         event.preventDefault();
 
         if (mainWindow) {
-            console.log(`Deep link received (open-url): ${url}`);
             mainWindow.webContents.send("deep-link-url", url);
             // Ensure window is shown/focused
             if (mainWindow.isMinimized()) mainWindow.restore();
@@ -145,8 +144,6 @@ if (!gotTheLock) {
             "assets",
             "tray_icon.png",
         );
-
-        console.log(finalPathString);
 
         const trayIcon = nativeImage.createFromPath(finalPathString);
 
