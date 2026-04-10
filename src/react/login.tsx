@@ -10,12 +10,7 @@ import { SiApple } from "react-icons/si";
 import { IoIosArrowBack } from "react-icons/io";
 import logo from "./images/Logo.png";
 import MotionDiv from "./components/motionDiv";
-import {
-    handleSignInWithApple,
-    handleSignInWithGoogle,
-    signInHandler,
-    signUpHandler,
-} from "./util/auth";
+import { useAuth } from "./hooks/useAuth";
 
 export default function Login() {
     const [email, setEmail] = useState<string>("");
@@ -24,14 +19,29 @@ export default function Login() {
 
     const [signUpView, setSignUpView] = useState<boolean>(false);
 
-    const [passwordInvalid, setPasswordInvalid] = useState<boolean>(false);
-    const [confirmPasswordInvalid, setConfirmPasswordInvalid] =
-        useState<boolean>(false);
-    const [emailInvalid, setEmailInvalid] = useState<boolean>(false);
-
     const { session, supabase, message, setMessage, authLoaded } =
         useContext(AvocadoroContext);
+
     const navigate = useNavigate();
+
+    // useAuth hook
+    const {
+        emailInvalid,
+        passwordInvalid,
+        confirmPasswordInvalid,
+        signInHandler,
+        signUpHandler,
+        signInWithGoogleHandler,
+        signInWithAppleHandler,
+        clearMessages,
+    } = useAuth(
+        supabase,
+        setMessage,
+        setSignUpView,
+        email,
+        password,
+        confirmPassword,
+    );
 
     useEffect(() => {
         if (!authLoaded) return; // prevent early redirect flicker
@@ -39,13 +49,6 @@ export default function Login() {
             navigate("/dashboard");
         }
     }, [authLoaded, session]);
-
-    function clearMessages(): void {
-        setMessage("");
-        setPasswordInvalid(false);
-        setEmailInvalid(false);
-        setConfirmPasswordInvalid(false);
-    }
 
     if (!session) {
         return (
@@ -174,19 +177,7 @@ export default function Login() {
                                         label="Sign Up"
                                         type="button"
                                         style="custom_button"
-                                        onClick={() =>
-                                            signUpHandler(
-                                                supabase,
-                                                setMessage,
-                                                email,
-                                                password,
-                                                confirmPassword,
-                                                setEmailInvalid,
-                                                setPasswordInvalid,
-                                                setConfirmPasswordInvalid,
-                                                setSignUpView,
-                                            )
-                                        }
+                                        onClick={() => signUpHandler()}
                                     />
                                 </div>
                             </div>
@@ -260,16 +251,7 @@ export default function Login() {
                                         label="Log in"
                                         type="button"
                                         style="custom_button"
-                                        onClick={() =>
-                                            signInHandler(
-                                                supabase,
-                                                setMessage,
-                                                email,
-                                                password,
-                                                setEmailInvalid,
-                                                setPasswordInvalid,
-                                            )
-                                        }
+                                        onClick={() => signInHandler()}
                                     />
                                     <div className="center_row_div">
                                         <Button
@@ -277,10 +259,7 @@ export default function Login() {
                                             style="custom_button button_logo"
                                             label={<FaGoogle />}
                                             onClick={() =>
-                                                handleSignInWithGoogle(
-                                                    supabase,
-                                                    setMessage,
-                                                )
+                                                signInWithGoogleHandler()
                                             }
                                         />
                                         <Button
@@ -288,10 +267,7 @@ export default function Login() {
                                             style="custom_button button_logo"
                                             label={<SiApple />}
                                             onClick={() =>
-                                                handleSignInWithApple(
-                                                    supabase,
-                                                    setMessage,
-                                                )
+                                                signInWithAppleHandler()
                                             }
                                         />
                                     </div>
