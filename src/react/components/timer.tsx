@@ -50,7 +50,16 @@ function Timer({
     useBlockMouse(timerOn);
 
     // Timer hooks
-    const { start, stop, reset, skip, totalSeconds, setTotalSeconds, endTimeRef, timerRef } = useTimer(
+    const {
+        start,
+        stop,
+        reset,
+        skip,
+        totalSeconds,
+        setTotalSeconds,
+        endTimeRef,
+        timerRef,
+    } = useTimer(
         setMessage,
         timerMode,
         setTimerMode,
@@ -63,8 +72,10 @@ function Timer({
     );
 
     // Pass to parent component
-    onTotalSecondsChange?.(totalSeconds);
-
+    useEffect(() => {
+        onTotalSecondsChange?.(totalSeconds);
+    }, [totalSeconds]);
+    
     // Transfer timer
     useEffect(() => {
         if (transferRecived) reset();
