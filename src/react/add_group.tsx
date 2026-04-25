@@ -7,7 +7,6 @@ import { IoIosArrowBack } from "react-icons/io";
 import { MdDeleteOutline } from "react-icons/md";
 
 import TimeSelector from "./components/timeSelector";
-import Loading from "./components/loading";
 import MotionDiv from "./components/motionDiv";
 import { useGroup } from "./hooks/useGroup";
 
@@ -28,6 +27,7 @@ export default function AddGroup() {
     const { session, supabase, message, setMessage } =
         useContext(AvocadoroContext);
 
+    // Set initial states
     useEffect(() => {
         if (id && state && state.edit) {
             setName(state.name);
@@ -44,6 +44,7 @@ export default function AddGroup() {
         window.electronAPI.setTimer("");
     }, []);
 
+    // useGroup Hook
     const { addNewGroupHandler, deleteGroup } = useGroup(
         supabase,
         navigate,

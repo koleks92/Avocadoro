@@ -15,6 +15,7 @@ function QuotePrinter() {
 
     const { supabase } = useContext(AvocadoroContext);
 
+    // Load quotes
     useEffect(() => {
         async function loadQuotes() {
             const { data, error } = await supabase.from("quotes").select(`
@@ -34,6 +35,7 @@ function QuotePrinter() {
         loadQuotes();
     }, []);
 
+    // Set interval for changing quotes
     useEffect(() => {
         if (quotes.length === 0) return;
 
@@ -46,7 +48,8 @@ function QuotePrinter() {
         return () => clearInterval(intervalId);
     }, [quotes]);
 
-    function selectRandomQuote(quotes: Quote[]) {
+    // Select random quote function
+    const selectRandomQuote = (quotes: Quote[]) => {
         if (quotes.length === 0) return;
 
         const randomIndex = Math.floor(Math.random() * quotes.length);

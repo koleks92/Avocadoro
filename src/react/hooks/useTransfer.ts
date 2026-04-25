@@ -23,8 +23,8 @@ export function useTransfer(
     const [supabaseFinishTime, setSupabaseFinishTime] = useState("");
     const channelRef = useRef<any>(null);
 
-    const handleClose = () => setModalVisible(false);
-
+    
+    // Stop listening for real time database
     const stopListening = () => {
         if (channelRef.current) {
             supabase.removeChannel(channelRef.current);
@@ -32,8 +32,10 @@ export function useTransfer(
         }
     };
 
+    // Open/Close Modal
+    const handleClose = () => setModalVisible(false);
+    
     const openModal = () => {
-        console.log(timerOn);
         setTransferStatus(timerOn ? "Send" : "Recive");
         setTransferStatusText(
             timerOn ? "Ready to send timer!" : "Ready to recive timer!",
@@ -41,6 +43,7 @@ export function useTransfer(
         setModalVisible(true);
     };
 
+    // Transfer timer function
     const transferTimer = async () => {
         if (transferStatus === "Recive") {
             const { data } = await supabase

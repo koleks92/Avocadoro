@@ -21,28 +21,31 @@ export default function Group() {
     const { supabase, timerOn, message, setMessage, timerMode } =
         useContext(AvocadoroContext);
 
-        const {
-            totalSeconds,
-            setTotalSeconds,
-            timerView,
-            setTimerView,
-            avocadoroAmount,
-            totalTime,
-            onCompleteHandler,
-        } = useGroupSession(supabase, id!, state, setMessage);
-        
-        const {
-            modalVisible,
-            setModalVisible,
-            transferStatus,
-            transferStatusText,
-            transferRecived,
-            supabaseFinishTime,
-            openModal,
-            transferTimer,
-            handleClose,
-        } = useTransfer(supabase, id!, timerOn, timerMode, totalSeconds);
+    // useGroupSession hook
+    const {
+        totalSeconds,
+        setTotalSeconds,
+        timerView,
+        setTimerView,
+        avocadoroAmount,
+        totalTime,
+        onCompleteHandler,
+    } = useGroupSession(supabase, id!, state, setMessage);
 
+    // useTransfer hook
+    const {
+        modalVisible,
+        setModalVisible,
+        transferStatus,
+        transferStatusText,
+        transferRecived,
+        supabaseFinishTime,
+        openModal,
+        transferTimer,
+        handleClose,
+    } = useTransfer(supabase, id!, timerOn, timerMode, totalSeconds);
+
+    // Check timer to see if transfer is available
     useEffect(() => {
         const checkTimer = async (): Promise<void> => {
             const { data, error } = await supabase
@@ -59,10 +62,12 @@ export default function Group() {
         checkTimer();
     }, []);
 
+    // Clean message
     useEffect(() => {
         if (!timerOn) setMessage("");
     }, [timerOn]);
 
+    // Check if edit/goBack is available
     const editCheck = () =>
         timerOn
             ? setMessage("Reset the timer first")
@@ -195,7 +200,7 @@ export default function Group() {
                 <div className="dashboard_bottom_div">
                     <Button
                         onClick={() => {
-                            openModal()
+                            openModal();
                         }}
                         type="button"
                         style="custom_button button_logo_group edit_button"

@@ -10,7 +10,7 @@ export default function AnonymousTimer() {
     const { state } = useLocation();
     const navigate = useNavigate();
 
-    const { timerOn, setTimerOn, message, setMessage } =
+    const { timerOn, message, setMessage } =
         useContext(AvocadoroContext);
 
     const [focusTimer, setFocusTimer] = useState<number>(

@@ -14,10 +14,12 @@ export function useGroupSession(
     const [avocadoroAmount, setAvocadoroAmount] = useState(0);
     const [totalTime, setTotalTime] = useState("");
 
+    // Set avocadoro and time
     useEffect(() => {
         setAvocadoroAmount(Math.floor(totalMinutes / state.focus_timer));
         setTotalTime(convertTime(totalMinutes));
     }, [totalMinutes]);
+
 
     useEffect(() => {
         let timeout: ReturnType<typeof setTimeout>;
@@ -32,6 +34,7 @@ export function useGroupSession(
         return () => clearTimeout(timeout);
     }, [timerView]);
 
+    // onComplete function
     const onCompleteHandler = async (minutes: number, finishTime: number) => {
         setMessage("");
 

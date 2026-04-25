@@ -43,6 +43,7 @@ export default function Login() {
         confirmPassword,
     );
 
+    // Check is session if avaliable
     useEffect(() => {
         if (!authLoaded) return; // prevent early redirect flicker
         if (session) {

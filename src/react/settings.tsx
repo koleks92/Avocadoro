@@ -12,7 +12,7 @@ export default function Settings() {
     const [removeView, setRemoveView] = useState(false);
 
     const navigate = useNavigate();
-    const { session, supabase } = useContext(AvocadoroContext);
+    const { supabase } = useContext(AvocadoroContext);
 
     const deleteAccountHandler = async (): Promise<void> => {
         await deleteAccount(supabase);

@@ -25,10 +25,12 @@ export default function Dashboard() {
     const { session, supabase } = useContext(AvocadoroContext);
     const navigate = useNavigate();
 
+    // Clear the timer
     useEffect(() => {
         window.electronAPI.setTimer("");
     }, []);
 
+    // Initial load groups
     useEffect(() => {
         const loadGroups = async () => {
             // Wait until session is ready
@@ -67,6 +69,7 @@ export default function Dashboard() {
         loadGroups();
     }, [session]);
 
+    // Sign out function
     async function signOut(): Promise<void> {
         const { error } = await supabase.auth.signOut();
 

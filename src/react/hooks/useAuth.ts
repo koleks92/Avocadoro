@@ -15,6 +15,7 @@ export function useAuth(
         useState<boolean>(false);
     const [emailInvalid, setEmailInvalid] = useState<boolean>(false);
 
+    // Sign In function
     const signInHandler = async (): Promise<void> => {
         setMessage("");
 
@@ -43,6 +44,7 @@ export function useAuth(
         }
     };
 
+    // Sign Up function
     const signUpHandler = async (): Promise<void> => {
         setMessage("");
 
@@ -79,6 +81,7 @@ export function useAuth(
         }
     };
 
+    // Google Sign In
     const signInWithGoogleHandler = async (): Promise<void> => {
         const { error } = await supabase.auth.signInWithOAuth({
             provider: "google",
@@ -95,6 +98,7 @@ export function useAuth(
         }
     };
 
+    // Apple Sign In
     const signInWithAppleHandler = async (): Promise<void> => {
         const { error } = await supabase.auth.signInWithOAuth({
             provider: "apple",
